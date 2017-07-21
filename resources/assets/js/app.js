@@ -26,7 +26,7 @@ const router = new VueRouter({routes, mode: 'history'});
  */
 
 Vue.component('grid', require('./components/Grid.vue'));
-Vue.component('layoutbackend', require('./components/LayoutBackend.vue'));
+Vue.component('layoutbackend', require('./components/admin/LayoutBackend.vue'));
 Vue.component('landinglayout', require('./components/landing/LandingLayout.vue'));
 Vue.component('index', require('./components/landing/Index.vue'));
 Vue.component('topics-grid', require('./components/topics/Index.vue'));

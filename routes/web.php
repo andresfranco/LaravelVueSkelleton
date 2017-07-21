@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/admin', function () {
+    return view('admin');
+});
+
 Route::get('/{name}', function () {
     return view('welcome');
 })->where('name', '(test|grid|prueba)');
