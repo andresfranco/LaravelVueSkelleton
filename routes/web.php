@@ -19,9 +19,13 @@ Route::get('/admin', function () {
     return view('admin');
 });
 
+Route::get('/admin/{name}', function () {
+    return view('admin');
+})->where('name', '(topics)');
+
 Route::get('/{name}', function () {
     return view('welcome');
-})->where('name', '(test|grid|prueba)');
+})->where('name', '(test|grid|prueba|admin/topics)');
 
 
 

@@ -1,20 +1,18 @@
 <template>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading"><h3>{{title}}</h3></div>
+    <div class ="grid-container">
+                <div>
+                    <div><h3>{{title}}</h3></div>
 
-                    <div class="panel-body">    
+                    <div>
                  <div>
                     <form v-on:submit.prevent="Search(currentPage,'searchForm')">
                         <div class="form-group">
                         <label for="name">Name</label>
-                        <input  name ="name" type="text" v-model="name" class="form-control">
+                        <input  name ="name" type="text" v-model="name" class="form-control search-control">
                         </div>
                         <div class="form-group">
                         <label for="name">Description</label>
-                        <input name ="description" type="text" v-model="description" class="form-control">
+                        <input name ="description" type="text" v-model="description" class="form-control search-control">
                         </div>
                         <div class="form-group">
                      <button type="submit" class="btn btn-primary">Buscar</button>  
@@ -69,10 +67,6 @@
                 </nav>
            
             </div>
-        
-            
-            </div>
-        </div>
     </div>
 </template>
 
@@ -228,3 +222,9 @@ import VuePaginate from 'vue-paginate';
     
     } 
 </script>
+<style>
+    .grid-container{
+        padding-top: 40px;
+    }
+
+</style>
