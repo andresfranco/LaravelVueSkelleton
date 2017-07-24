@@ -35,8 +35,8 @@
                     </tr>
                     <tr>
                     <td> </td>
-                    <td><input  type ="text" v-model ="fname"></td>
-                    <td><input type ="text" v-model = "fdescription" ></td>
+                    <td><input  type ="text" class ="search-control" v-model ="fname"></td>
+                    <td><input type ="text" class ="search-control" v-model = "fdescription" ></td>
                     </tr>
                 </thead>
                 
