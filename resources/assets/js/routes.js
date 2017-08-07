@@ -6,7 +6,7 @@ module.exports = {
         { path: '/prueba', component: require('./components/Prueba.vue')},
         { path: '/admin', component: require('./components/admin/Index.vue')},
         { path: '/admin/topics', component: require('./components/topics/Index.vue')},
-        { path: '/admin/topics/new', component: require('./components/topics/AddEdit.vue')},
+        { path: '/admin/topics/addedit', component: require('./components/topics/AddEdit.vue')},
 
     ]
 };

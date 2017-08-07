@@ -61,7 +61,10 @@ class TopicController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request)
-    {
+    {   
+        //validate topics
+       $this->validateTopics($request);
+       //Create topic
         $topic = new Topic;
         $topic->name = $request->name;
         $topic->description = $request->description;
@@ -69,7 +72,20 @@ class TopicController extends Controller
 
         return response()->json( $topic, 201);
     }
+    
+    public function validateTopics($request){
+        // validation rules
+        $rules = ['name' => 'required' ];
 
+        // Validation error
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return [
+                'created' => false,
+                'errors'  => $validator->errors()->all()
+            ];
+        }
+    }
 
     /**
      * Update the specified resource in storage.

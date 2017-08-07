@@ -21,7 +21,7 @@
                     
                  </div>  
                  <hr>      
-              <button type="button" class="btn btn-primary"><router-link to="/topics/new">New</router-link></button> 
+              <router-link :to="{path:'topics/addedit', query:{title:'New Topic',mode:'ins'}}" class="btn btn-primary">New</router-link>
             
             <table class="table">
                 <thead>

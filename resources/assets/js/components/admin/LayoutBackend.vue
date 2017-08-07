@@ -97,18 +97,17 @@ export default {
 </script>
 <style>
     body{
-        font-size: 11px;
+        font-size: 12px;
     }
     .btn{
-        font-size: 11px;
+        font-size: 12px;
     }
     h3{
         font-size: 20px;
     }
     .search-control {
-        height: 20px;
-        font-size: 11px;
-
+        height: 25px;
+        font-size: 12px;
     }
 
     #wrapper {
