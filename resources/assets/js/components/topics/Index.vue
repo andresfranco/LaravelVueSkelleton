@@ -21,7 +21,7 @@
                     
                  </div>  
                  <hr>      
-              <router-link :to="{path:'topics/addedit', query:{title:'New Topic',mode:'ins'}}" class="btn btn-primary">New</router-link>
+              <router-link :to="{name:'AddEditTopic', params:{title:'New Topic',mode:'ins'}}" class="btn btn-primary">New</router-link>
             
             <table class="table">
                 <thead>
@@ -47,7 +47,7 @@
                         <td>{{ topic.id }}</td>
                         <td>{{ topic.name }}</td>
                         <td>{{ topic.description}}</td>
-                        <td><button type="button" class="btn btn-primary">Edit</button></td>
+                        <td><router-link :to="{name:'AddEditTopic', params:{title:'Edit Topic',mode:'upd',id: topic.id }}"  class="btn btn-primary">Edit</router-link></td>
                         <td><button type="button" class="btn btn-danger">Delete</button></td>
                     </tr>
                    

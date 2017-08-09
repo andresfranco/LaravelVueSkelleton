@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Topic as Topic;
+use Validator;
+ 
 class TopicController extends Controller
 {
     /**
@@ -30,6 +32,18 @@ class TopicController extends Controller
             $topics_data,
             200
         );
+    }
+
+
+     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $topic = Topic::find($id);
+        return response()->json( $topic, 201); 
     }
 
       /**
@@ -62,29 +76,37 @@ class TopicController extends Controller
      */
     public function create(Request $request)
     {   
+       $topic = new Topic;
         //validate topics
-       $this->validateTopics($request);
-       //Create topic
-        $topic = new Topic;
-        $topic->name = $request->name;
-        $topic->description = $request->description;
+       $validationMessages = $this->validateTopics($request,$topic);
+       if ($validationMessages['success']=='true'){
+        //Create topic
+        $topic->name = isset($request->name)==true?$request->name:'';
+        $topic->description = isset($request->description)==true?$request->description:'';
         $topic->save();
-
         return response()->json( $topic, 201);
+       }
+       else
+       {
+        //Validation Errors   
+        return response()->json(
+           $validationMessages,422
+        );
+       }
+      
     }
     
-    public function validateTopics($request){
-        // validation rules
-        $rules = ['name' => 'required' ];
-
-        // Validation error
-        $validator = \Validator::make($request->all(), $rules);
+    public function validateTopics($request,$topic){
+     
+        $validator = Validator::make($request->all(), $topic->rules);
         if ($validator->fails()) {
-            return [
-                'created' => false,
-                'errors'  => $validator->errors()->all()
-            ];
+        $response=['error'=>$validator->messages(),'success'=>'false' ];
         }
+        else{
+           $response=['success'=>'true' ];
+        } 
+        
+         return $response;
     }
 
     /**
@@ -94,9 +116,24 @@ class TopicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update($id,Request $request)
+    {  
+        $topic = Topic::find($id);
+        $validationMessages = $this->validateTopics($request,$topic);
+       if ($validationMessages['success']=='true'){
+        //Create topic
+        $topic->name = isset($request->name)==true?$request->name:'';
+        $topic->description = isset($request->description)==true?$request->description:'';
+        $topic->save();
+        return response()->json( $topic, 201);
+       }
+       else
+       {
+        //Validation Errors   
+        return response()->json(
+           $validationMessages,422
+        );
+       }
     }
 
     /**
@@ -107,6 +144,19 @@ class TopicController extends Controller
      */
     public function destroy($id)
     {
-        //
+       $topic = Topic::find($id);
+        if (!$topic) {
+             return response()->json(
+            ["error"=>"Topic not found"],422
+        );
+        }
+ 
+        if($topic->delete()) {
+             return response()->json(
+            ["success"=>"true"],422);
+        } else 
+        {
+            return response()->json(["success"=>false,"error"=>"Topic can not be deleted"],422);
+        }
     }
 }

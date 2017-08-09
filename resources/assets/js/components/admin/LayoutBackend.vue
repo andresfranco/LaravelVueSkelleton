@@ -109,7 +109,12 @@ export default {
         height: 25px;
         font-size: 12px;
     }
-
+    
+    .errorMessage{
+        padding-top:10px;
+        color:red;
+        font-weight:bold;
+        }
     #wrapper {
         padding-left: 0;
         -webkit-transition: all 0.5s ease;

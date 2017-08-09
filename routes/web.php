@@ -35,8 +35,11 @@ Route::get('/{name}', function () {
     });
     Route::prefix('topics')->group(function () {
         Route::get('/all', 'TopicController@all');
+        Route::get('/edit/{id}', 'TopicController@edit');
         Route::post('/create', 'TopicController@create');
         Route::post('/search', 'TopicController@search');
+        Route::put('/update/{id}', 'TopicController@update');
+        Route::delete('/delete/{id}', 'TopicController@destroy');
     });
 
 

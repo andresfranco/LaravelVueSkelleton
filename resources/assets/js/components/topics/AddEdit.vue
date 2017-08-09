@@ -1,37 +1,84 @@
 <template>
 <div class="form-container">
     <div><h3>{{title}}</h3></div>
-    <form>
+    <form  @submit.prevent="addEditTopic(id)">
         <div class="form-group">
         <label for="name">Name</label>
-        <input  name ="name" type="text" v-model="name" class="form-control">
+        <input  name ="name" type="text" v-model="topicData.name" class="form-control">
+        <div v-if="!topicData.name" v-for="error in errors.name" >
+        <p class="errorMessage">{{error}}</p>
+        </div>
         </div>
         <div class="form-group">
         <label for="name">Description</label>
-        <input name ="description" type="text" v-model="description" class="form-control">
+        <input name ="description" type="text" v-model="topicData.description" class="form-control">
+        <div v-if="!topicData.description" v-for="error in errors.description" >
+        <p class="errorMessage">{{error}}</p>
+        </div>
         </div>
         <div class="form-group">
-        <button type="submit" class="btn btn-primary">Guardar</button>  <button class="btn btn-primary" @click="Cancel()" >Cancelar</button> 
+        <button type="submit" class="btn btn-primary">Guardar</button> <button type="button" class="btn btn-primary" @click="Cancel()" >Cancelar</button> 
         </div>
     </form>
 </div>  
 </template>
 
 <script>
+import {HTTP} from '../common/http-common';
 export default {
      data: function () {
         return {
             menuclicked: false,
             name:'',
             description:'' ,
-            title:this.$route.query.title,
-            mode:this.$route.query.mode
+            title:this.$route.params.title,
+            mode:this.$route.params.mode,
+            id:this.$route.params.id,
+            topicData:this.getTopics(this.$route.params.mode,this.$route.params.id),
+             errors:{name:[],description:[]}    
            
         }
     },
     methods:{
         Cancel:function(){
           this.$router.push({ path: '/admin/topics' });
+        },
+        addEditTopic:function(id)
+        {
+        this.mode =='ins'? this.addTopic():this.updateTopic(id);
+        },
+        addTopic:function(){
+            HTTP.post('topics/create',this.topicData)
+                    .then(response =>{
+                        this.topicData='';
+                        this.$router.push('/admin/topics');
+                    })
+                    .catch(error=>{
+                        this.errors = error.response.data.error;
+                    });
+        },
+        updateTopic:function(id){
+          HTTP.put('topics/update/'+id,this.topicData)
+                    .then(response =>{
+                        this.topicData = '';
+                        this.$router.push('/admin/topics');
+                    })
+                    .catch(error=>{
+                        this.errors = error.response.data.error;
+                    });
+        },
+        getTopics:function(mode,id){
+            this.topicData ={ name:'',description:''};
+            if (mode =='upd'){
+             HTTP.get('topics/edit/'+id)
+                    .then(response =>{
+                        this.topicData = response.data;
+                    })
+                    .catch(error=>{
+                        console.log(response.error);
+                    });
+            }
+            return this.topicData;
         }
     }
 }

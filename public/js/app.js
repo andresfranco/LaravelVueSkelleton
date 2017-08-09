@@ -56191,7 +56191,7 @@ if (inBrowser && window.Vue) {
 
 
 module.exports = {
-    routes: [{ path: '/', component: __webpack_require__(80) }, { path: '/test', component: __webpack_require__(171) }, { path: '/prueba', component: __webpack_require__(173) }, { path: '/admin', component: __webpack_require__(176) }, { path: '/admin/topics', component: __webpack_require__(81) }, { path: '/admin/topics/addedit', component: __webpack_require__(140) }]
+    routes: [{ path: '/', component: __webpack_require__(80) }, { path: '/test', component: __webpack_require__(171) }, { path: '/prueba', component: __webpack_require__(173) }, { path: '/admin', component: __webpack_require__(176) }, { path: '/admin/topics', component: __webpack_require__(81) }, { path: '/admin/topics/addedit', component: __webpack_require__(140), name: 'AddEditTopic' }]
 };
 
 /***/ }),
@@ -64456,8 +64456,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "btn btn-primary",
     attrs: {
       "to": {
-        path: 'topics/addedit',
-        query: {
+        name: 'AddEditTopic',
+        params: {
           title: 'New Topic',
           mode: 'ins'
         }
@@ -64522,7 +64522,19 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       attrs: {
         "data-index": index
       }
-    }, [_c('td', [_vm._v(_vm._s(topic.id))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(topic.name))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(topic.description))]), _vm._v(" "), _vm._m(1, true), _vm._v(" "), _vm._m(2, true)])
+    }, [_c('td', [_vm._v(_vm._s(topic.id))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(topic.name))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(topic.description))]), _vm._v(" "), _c('td', [_c('router-link', {
+      staticClass: "btn btn-primary",
+      attrs: {
+        "to": {
+          name: 'AddEditTopic',
+          params: {
+            title: 'Edit Topic',
+            mode: 'upd',
+            id: topic.id
+          }
+        }
+      }
+    }, [_vm._v("Edit")])], 1), _vm._v(" "), _vm._m(1, true)])
   }))])], 1), _vm._v(" "), _c('nav', [_c('div', [_vm._v("Showing " + _vm._s(_vm.from) + " to " + _vm._s(_vm.to) + " of " + _vm._s(_vm.total)), _c('p'), _vm._v(" "), _c('ul', {
     staticClass: "pagination"
   }, [_c('li', {
@@ -64553,13 +64565,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "type": "submit"
     }
   }, [_vm._v("Buscar")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('td', [_c('button', {
-    staticClass: "btn btn-primary",
-    attrs: {
-      "type": "button"
-    }
-  }, [_vm._v("Edit")])])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('td', [_c('button', {
     staticClass: "btn btn-danger",
@@ -64622,6 +64627,7 @@ exports.push([module.i, "\n.form-container{\r\npadding-top:50px;\n}\r\n", ""]);
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_http_common__ = __webpack_require__(82);
 //
 //
 //
@@ -64641,6 +64647,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -64648,14 +64661,53 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             menuclicked: false,
             name: '',
             description: '',
-            title: this.$route.query.title,
-            mode: this.$route.query.mode
+            title: this.$route.params.title,
+            mode: this.$route.params.mode,
+            id: this.$route.params.id,
+            topicData: this.getTopics(this.$route.params.mode, this.$route.params.id),
+            errors: { name: [], description: [] }
 
         };
     },
     methods: {
         Cancel: function Cancel() {
             this.$router.push({ path: '/admin/topics' });
+        },
+        addEditTopic: function addEditTopic(id) {
+            this.mode == 'ins' ? this.addTopic() : this.updateTopic(id);
+        },
+        addTopic: function addTopic() {
+            var _this = this;
+
+            __WEBPACK_IMPORTED_MODULE_0__common_http_common__["a" /* HTTP */].post('topics/create', this.topicData).then(function (response) {
+                _this.topicData = '';
+                _this.$router.push('/admin/topics');
+            }).catch(function (error) {
+                _this.errors = error.response.data.error;
+            });
+        },
+        updateTopic: function updateTopic(id) {
+            var _this2 = this;
+
+            __WEBPACK_IMPORTED_MODULE_0__common_http_common__["a" /* HTTP */].put('topics/update/' + id, this.topicData).then(function (response) {
+                _this2.topicData = '';
+                _this2.$router.push('/admin/topics');
+            }).catch(function (error) {
+                _this2.errors = error.response.data.error;
+            });
+        },
+        getTopics: function getTopics(mode, id) {
+            var _this3 = this;
+
+            this.topicData = { name: '', description: '' };
+            if (mode == 'upd') {
+                __WEBPACK_IMPORTED_MODULE_0__common_http_common__["a" /* HTTP */].get('topics/edit/' + id).then(function (response) {
+                    _this3.topicData = response.data;
+                }).catch(function (error) {
+                    console.log(response.error);
+                });
+            }
+            return this.topicData;
         }
     }
 });
@@ -64667,7 +64719,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "form-container"
-  }, [_c('div', [_c('h3', [_vm._v(_vm._s(_vm.title))])]), _vm._v(" "), _c('form', [_c('div', {
+  }, [_c('div', [_c('h3', [_vm._v(_vm._s(_vm.title))])]), _vm._v(" "), _c('form', {
+    on: {
+      "submit": function($event) {
+        $event.preventDefault();
+        _vm.addEditTopic(_vm.id)
+      }
+    }
+  }, [_c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     attrs: {
@@ -64677,8 +64736,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: (_vm.name),
-      expression: "name"
+      value: (_vm.topicData.name),
+      expression: "topicData.name"
     }],
     staticClass: "form-control",
     attrs: {
@@ -64686,15 +64745,19 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "type": "text"
     },
     domProps: {
-      "value": (_vm.name)
+      "value": (_vm.topicData.name)
     },
     on: {
       "input": function($event) {
         if ($event.target.composing) { return; }
-        _vm.name = $event.target.value
+        _vm.topicData.name = $event.target.value
       }
     }
-  })]), _vm._v(" "), _c('div', {
+  }), _vm._v(" "), _vm._l((_vm.errors.name), function(error) {
+    return (!_vm.topicData.name) ? _c('div', [_c('p', {
+      staticClass: "errorMessage"
+    }, [_vm._v(_vm._s(error))])]) : _vm._e()
+  })], 2), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     attrs: {
@@ -64704,8 +64767,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: (_vm.description),
-      expression: "description"
+      value: (_vm.topicData.description),
+      expression: "topicData.description"
     }],
     staticClass: "form-control",
     attrs: {
@@ -64713,15 +64776,19 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "type": "text"
     },
     domProps: {
-      "value": (_vm.description)
+      "value": (_vm.topicData.description)
     },
     on: {
       "input": function($event) {
         if ($event.target.composing) { return; }
-        _vm.description = $event.target.value
+        _vm.topicData.description = $event.target.value
       }
     }
-  })]), _vm._v(" "), _c('div', {
+  }), _vm._v(" "), _vm._l((_vm.errors.description), function(error) {
+    return (!_vm.topicData.description) ? _c('div', [_c('p', {
+      staticClass: "errorMessage"
+    }, [_vm._v(_vm._s(error))])]) : _vm._e()
+  })], 2), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('button', {
     staticClass: "btn btn-primary",
@@ -64730,6 +64797,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("Guardar")]), _vm._v(" "), _c('button', {
     staticClass: "btn btn-primary",
+    attrs: {
+      "type": "button"
+    },
     on: {
       "click": function($event) {
         _vm.Cancel()
@@ -65283,7 +65353,7 @@ exports = module.exports = __webpack_require__(30)(undefined);
 
 
 // module
-exports.push([module.i, "\nbody{\n    font-size: 12px;\n}\n.btn{\n    font-size: 12px;\n}\nh3{\n    font-size: 20px;\n}\n.search-control {\n    height: 25px;\n    font-size: 12px;\n}\n#wrapper {\n    padding-left: 0;\n    -webkit-transition: all 0.5s ease;\n    -moz-transition: all 0.5s ease;\n    -o-transition: all 0.5s ease;\n    transition: all 0.5s ease;\n}\n#wrapper.toggled {\n    padding-left: 250px;\n}\n#sidebar-wrapper {\n    position: fixed;\n    left: 100px;\n    z-index: 1000;\n    overflow-y: auto;\n    margin-left: -100px;\n    width: 0;\n    height: 100%;\n    background: #000;\n    -webkit-transition: all 0.5s ease;\n    -moz-transition: all 0.5s ease;\n    -o-transition: all 0.5s ease;\n    transition: all 0.5s ease;\n}\n#wrapper.toggled #sidebar-wrapper {\n    width: 250px;\n}\n#page-content-wrapper {\n    padding: 15px;\n    width: 100%;\n}\n#wrapper.toggled #page-content-wrapper {\n    position: absolute;\n    margin-right: -250px;\n}\n\n/* Sidebar Styles */\n.sidebar-nav {\n    position: absolute;\n    top: 0;\n    margin: 0;\n    padding: 0;\n    width: 250px;\n    list-style: none;\n}\n.sidebar-nav li {\n    text-indent: 20px;\n    line-height: 40px;\n}\n.sidebar-nav li a {\n    display: block;\n    color: #999999;\n    text-decoration: none;\n}\n.sidebar-nav li a:hover {\n    background: rgba(255, 255, 255, 0.2);\n    color: #fff;\n    text-decoration: none;\n}\n.sidebar-nav li a:active,\n.sidebar-nav li a:focus {\n    text-decoration: none;\n}\n.sidebar-nav > .sidebar-brand {\n    height: 65px;\n    font-size: 18px;\n    line-height: 60px;\n}\n.sidebar-nav > .sidebar-brand a {\n    color: #999999;\n}\n.sidebar-nav > .sidebar-brand a:hover {\n    background: none;\n    color: #fff;\n}\n@media (min-width: 768px) {\n#wrapper {\n        padding-left: 250px;\n}\n#wrapper.toggled {\n        padding-left: 0;\n}\n#sidebar-wrapper {\n        width: 250px;\n}\n#wrapper.toggled #sidebar-wrapper {\n        width: 0;\n}\n#page-content-wrapper {\n        padding: 20px;\n}\n#wrapper.toggled #page-content-wrapper {\n        position: relative;\n        margin-right: 0;\n}\n}\n", ""]);
+exports.push([module.i, "\nbody{\n    font-size: 12px;\n}\n.btn{\n    font-size: 12px;\n}\nh3{\n    font-size: 20px;\n}\n.search-control {\n    height: 25px;\n    font-size: 12px;\n}\n.errorMessage{\n    padding-top:10px;\n    color:red;\n    font-weight:bold;\n}\n#wrapper {\n    padding-left: 0;\n    -webkit-transition: all 0.5s ease;\n    -moz-transition: all 0.5s ease;\n    -o-transition: all 0.5s ease;\n    transition: all 0.5s ease;\n}\n#wrapper.toggled {\n    padding-left: 250px;\n}\n#sidebar-wrapper {\n    position: fixed;\n    left: 100px;\n    z-index: 1000;\n    overflow-y: auto;\n    margin-left: -100px;\n    width: 0;\n    height: 100%;\n    background: #000;\n    -webkit-transition: all 0.5s ease;\n    -moz-transition: all 0.5s ease;\n    -o-transition: all 0.5s ease;\n    transition: all 0.5s ease;\n}\n#wrapper.toggled #sidebar-wrapper {\n    width: 250px;\n}\n#page-content-wrapper {\n    padding: 15px;\n    width: 100%;\n}\n#wrapper.toggled #page-content-wrapper {\n    position: absolute;\n    margin-right: -250px;\n}\n\n/* Sidebar Styles */\n.sidebar-nav {\n    position: absolute;\n    top: 0;\n    margin: 0;\n    padding: 0;\n    width: 250px;\n    list-style: none;\n}\n.sidebar-nav li {\n    text-indent: 20px;\n    line-height: 40px;\n}\n.sidebar-nav li a {\n    display: block;\n    color: #999999;\n    text-decoration: none;\n}\n.sidebar-nav li a:hover {\n    background: rgba(255, 255, 255, 0.2);\n    color: #fff;\n    text-decoration: none;\n}\n.sidebar-nav li a:active,\n.sidebar-nav li a:focus {\n    text-decoration: none;\n}\n.sidebar-nav > .sidebar-brand {\n    height: 65px;\n    font-size: 18px;\n    line-height: 60px;\n}\n.sidebar-nav > .sidebar-brand a {\n    color: #999999;\n}\n.sidebar-nav > .sidebar-brand a:hover {\n    background: none;\n    color: #fff;\n}\n@media (min-width: 768px) {\n#wrapper {\n        padding-left: 250px;\n}\n#wrapper.toggled {\n        padding-left: 0;\n}\n#sidebar-wrapper {\n        width: 250px;\n}\n#wrapper.toggled #sidebar-wrapper {\n        width: 0;\n}\n#page-content-wrapper {\n        padding: 20px;\n}\n#wrapper.toggled #page-content-wrapper {\n        position: relative;\n        margin-right: 0;\n}\n}\n", ""]);
 
 // exports
 
