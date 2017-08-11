@@ -41,7 +41,7 @@ export default {
     },
     methods:{
         Cancel:function(){
-          this.$router.push({ path: '/admin/topics' });
+          this.$router.push({name:'TopicIndex'});
         },
         addEditTopic:function(id)
         {
@@ -51,7 +51,7 @@ export default {
             HTTP.post('topics/create',this.topicData)
                     .then(response =>{
                         this.topicData='';
-                        this.$router.push('/admin/topics');
+                        this.$router.push({name:'TopicIndex',params:{ action:true,message:"Succes created" }});
                     })
                     .catch(error=>{
                         this.errors = error.response.data.error;
@@ -61,7 +61,7 @@ export default {
           HTTP.put('topics/update/'+id,this.topicData)
                     .then(response =>{
                         this.topicData = '';
-                        this.$router.push('/admin/topics');
+                        this.$router.push({name:'TopicIndex',params:{ action:true,message:"Succes update" }});
                     })
                     .catch(error=>{
                         this.errors = error.response.data.error;

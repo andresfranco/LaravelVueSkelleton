@@ -153,7 +153,7 @@ class TopicController extends Controller
  
         if($topic->delete()) {
              return response()->json(
-            ["success"=>"true"],422);
+            ["success"=>"true"],201);
         } else 
         {
             return response()->json(["success"=>false,"error"=>"Topic can not be deleted"],422);

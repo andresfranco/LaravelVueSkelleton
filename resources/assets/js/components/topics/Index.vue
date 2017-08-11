@@ -1,4 +1,5 @@
 <template>
+     <div>
     <div class ="grid-container">
                 <div>
                     <div><h3>{{title}}</h3></div>
@@ -22,7 +23,11 @@
                  </div>  
                  <hr>      
               <router-link :to="{name:'AddEditTopic', params:{title:'New Topic',mode:'ins'}}" class="btn btn-primary">New</router-link>
-            
+            <br><br>
+            <alert  v-model="showAlertMessage" :duration="3000" type="success" width="400px" dismissable>
+            <icon v-bind:name="'check-square'"></icon>
+            <strong>{{alertMessage}}</strong>
+            </alert>
             <table class="table">
                 <thead>
                     <tr>
@@ -48,7 +53,7 @@
                         <td>{{ topic.name }}</td>
                         <td>{{ topic.description}}</td>
                         <td><router-link :to="{name:'AddEditTopic', params:{title:'Edit Topic',mode:'upd',id: topic.id }}"  class="btn btn-primary">Edit</router-link></td>
-                        <td><button type="button" class="btn btn-danger">Delete</button></td>
+                        <td><button type="button" class="btn btn-danger" @click ="showModalData(topic)">Delete</button></td>
                     </tr>
                    
                 </tbody>
@@ -68,6 +73,29 @@
            
             </div>
     </div>
+  <div>
+    <modal v-model="showDeleteModal" effect="fade" width="400">
+     <div slot="modal-header" class="modal-header">
+    <h4 class="modal-title">
+      Are you sure you want to delete this topic?
+    </h4>
+  </div>
+    <div slot="modal-body" class="modal-body">
+    <p>Name: {{modalData.name}}</p>
+    <p>Description: {{modalData.description}}</p>
+
+    </div>
+    <div slot="modal-footer" class="modal-footer">
+    <button type="button" class="btn btn-default" @click="showDeleteModal = false">Cancel</button>
+    <button type="button" class="btn btn-danger" @click="deleteData(modalData.id)">Delete</button>
+    </div>
+    </modal>
+   </div>
+   <div>
+  
+   </div>  
+
+ </div>  
 </template>
 
 <script>
@@ -76,10 +104,11 @@ import  'vue-awesome/icons/arrow-down';
 import 'vue-awesome/icons/arrow-up';
 import Icon from 'vue-awesome/components/Icon';
 import R from 'ramda';
-import VuePaginate from 'vue-paginate'; 
+import VuePaginate from 'vue-paginate';
+import { modal,alert} from 'vue-strap'; 
 
     export default {
-    components:{Icon,VuePaginate},
+    components:{Icon,VuePaginate,modal,alert},
     data:function() {
         return {
         title: '',
@@ -105,7 +134,10 @@ import VuePaginate from 'vue-paginate';
         pervPageUrl:'',
         to:'',
         total:'',
-        urlType:'list'
+        urlType:'list',
+        showDeleteModal:false,
+        alertMessage:this.$route.params.message,
+        modalData:{}
 
         }
     },
@@ -129,6 +161,13 @@ import VuePaginate from 'vue-paginate';
       }); 
         
         
+        },
+          showAlertMessage:function(){
+            if(this.$route.params.action){
+               return this.$route.params.action; 
+            }
+            return false;      
+           
         }
         
     },
@@ -213,7 +252,27 @@ import VuePaginate from 'vue-paginate';
                 this.errors.push(e)
                 });
 
+        },
+        showModalData:function(topic){
+           this.showDeleteModal=true; 
+           this.modalData =topic;
+
+        },
+        deleteData:function(id){
+
+          HTTP.delete('topics/delete/'+id)
+                    .then(response =>{
+                        this.showDeleteModal=false; 
+                        this.$router.push({name:'TopicIndex'});
+                        location.reload();
+                         
+                        
+                    })
+                    .catch(error=>{
+                         this.errors = error.response.data.error;
+                    });
         }
+       
     },
     created() 
     {
