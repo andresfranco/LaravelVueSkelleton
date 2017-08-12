@@ -25,7 +25,7 @@ class TopicController extends Controller
      */
     public function all()
     {
-        $topics =Topic::orderBy('name')->paginate(20);
+        $topics =Topic::orderBy('name')->paginate(2);
         $title = 'Topics';
         $topics_data =["title"=>$title,"topics"=>$topics];
         return response()->json(
@@ -55,13 +55,13 @@ class TopicController extends Controller
     public function search(Request $request)
     {
         
-        $topics = Topic::where('name','LIKE', (is_null($request->name)?'':'%'.$request->name.'%'))
-        ->orWhere('description','LIKE',(is_null($request->description)?'':'%'.$request->description.'%'))
+        $topics = Topic::where('name','LIKE', (is_null($request->name)?' ':'%'.$request->name.'%'))
+        ->orWhere('description','LIKE',(is_null($request->description)?' ':'%'.$request->description.'%'))
         ->orderBy('name')
         ->paginate(20);
 
         if(!$request->name && !$request->description){
-           $topics = Topic::orderBy('name')->paginate(20);  
+           $topics = Topic::orderBy('name')->paginate(20);
         }    
         return response()->json($topics,201);
     }

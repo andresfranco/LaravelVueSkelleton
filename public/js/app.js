@@ -56875,11 +56875,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_paginate___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_vue_paginate__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_vue_strap__ = __webpack_require__(385);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_vue_strap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_vue_strap__);
-//
-//
-//
-//
-//
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -56992,32 +56989,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     components: { Icon: __WEBPACK_IMPORTED_MODULE_3_vue_awesome_components_Icon___default.a, VuePaginate: __WEBPACK_IMPORTED_MODULE_5_vue_paginate___default.a, modal: __WEBPACK_IMPORTED_MODULE_6_vue_strap__["modal"], alert: __WEBPACK_IMPORTED_MODULE_6_vue_strap__["alert"] },
     data: function data() {
+        var _gridFields;
+
         return {
             title: '',
-            test: 'Testasas',
             topics: [],
-            columns: [{ code: "", name: "id", title: "Id" }, { code: "", name: "name", title: "Name", filterName: "fname" }, { code: "", name: "description", title: "Description", filterName: "fdescription" }, { code: "edit", name: "" }, { code: "delete", name: "" }],
-            name: '',
-            description: '',
-            iconName: '',
-            clickedColumn: '',
-            order: '',
+            columns: [{ code: "", name: "id", title: "Id" }, { code: "", name: "name", title: "Name" }, { code: "", name: "description", title: "Description" }, { code: "edit", name: "" }, { code: "delete", name: "" }],
+            searchFields: { name: '', description: '' },
+            gridFields: (_gridFields = { iconName: '', clickedColumn: '', order: '' }, _defineProperty(_gridFields, 'iconName', ''), _defineProperty(_gridFields, 'currentPage', 1), _defineProperty(_gridFields, 'from', ''), _defineProperty(_gridFields, 'lastPage', ''), _defineProperty(_gridFields, 'nextPageUrl', ''), _defineProperty(_gridFields, 'perPage', ''), _defineProperty(_gridFields, 'pervPageUrl', ''), _defineProperty(_gridFields, 'to', ''), _defineProperty(_gridFields, 'total', ''), _defineProperty(_gridFields, 'urlType', 'list'), _defineProperty(_gridFields, 'gridfilters', { fname: '', fdescription: '' }), _gridFields),
+            modalFields: { showDeleteModal: false, modalData: {} },
+            alertFields: { alertMessage: this.$route.params.message, showAlert: false, alertDuration: 5000 },
             paginate: ['topicsList'],
-            fname: '',
-            fdescription: '',
-            currentPage: 1,
-            from: '',
-            lastPage: '',
-            nextPageUrl: '',
-            perPage: '',
-            pervPageUrl: '',
-            to: '',
-            total: '',
-            urlType: 'list',
-            showDeleteModal: false,
-            alertMessage: this.$route.params.message,
-            modalData: {},
-            deletedValue: false
+            urlType: 'list'
 
         };
     },
@@ -57026,23 +57009,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var vm = this;
             return this.topics.filter(function (item) {
 
-                if (vm.fname && !vm.fdescription) {
-                    return item.name.toLowerCase().indexOf(vm.fname.toLowerCase()) !== -1;
+                if (vm.gridFields.gridfilters.fname && !vm.gridFields.gridfilters.fdescription) {
+                    return item.name.toLowerCase().indexOf(vm.gridFields.gridfilters.fname.toLowerCase()) !== -1;
                 }
-                if (!vm.fname && vm.fdescription) {
-                    return item.description.toLowerCase().indexOf(vm.fdescription.toLowerCase()) !== -1;
+                if (!vm.gridFields.gridfilters.fname && vm.gridFields.gridfilters.fdescription) {
+                    return item.description.toLowerCase().indexOf(vm.gridFields.gridfilters.fdescription.toLowerCase()) !== -1;
                 }
-                if (vm.fname && vm.fdescription) {
-                    return item.name.toLowerCase().indexOf(vm.fname.toLowerCase()) !== -1 || item.description.toLowerCase().indexOf(vm.fdescription.toLowerCase()) !== -1;
+                if (vm.gridFields.gridfilters.fname && vm.gridFields.gridfilters.fdescription) {
+                    return item.name.toLowerCase().indexOf(vm.gridFields.gridfilters.fname.toLowerCase()) !== -1 || item.description.toLowerCase().indexOf(vm.gridFields.gridfilters.fdescription.toLowerCase()) !== -1;
                 }
                 return item;
             });
-        },
-        showAlertMessage: function showAlertMessage() {
-            if (this.$route.params.action) {
-                return true;
-            }
-            return false;
         }
 
     },
@@ -57053,8 +57030,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             this.urlType = 'search';
             callType == 'searchForm' ? currentPage = 1 : currentPage;
-            __WEBPACK_IMPORTED_MODULE_0__common_http_common__["a" /* HTTP */].post('topics/search?page=' + currentPage.toString(), { name: this.name, description: this.description }).then(function (response) {
-                //Grid data    
+            __WEBPACK_IMPORTED_MODULE_0__common_http_common__["a" /* HTTP */].post('topics/search?page=' + currentPage.toString(), this.searchFields).then(function (response) {
+                //Grid data
                 _this.topics = response.data.data,
                 //Pagination Values
                 _this.setPaginatedData({
@@ -57070,20 +57047,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }).catch(function (e) {
                 _this.errors.push(e);
             });
-            this.iconName = '';
+            this.gridFields.iconName = '';
         },
         Order: function Order(column_name) {
-            this.clickedColumn = column_name;
-            this.order = 'desc';
+            this.gridFields.clickedColumn = column_name;
+            this.gridFields.order = 'desc';
             this.topics = __WEBPACK_IMPORTED_MODULE_4_ramda___default.a.sortBy(__WEBPACK_IMPORTED_MODULE_4_ramda___default.a.prop(column_name), this.topics);
-            if (this.iconName == '') {
-                this.iconName = 'arrow-down';
-            } else if (this.iconName == 'arrow-down') {
-                this.iconName = 'arrow-up';
-                this.order = 'asc';
+            if (this.gridFields.iconName == '') {
+                this.gridFields.iconName = 'arrow-down';
+            } else if (this.gridFields.iconName == 'arrow-down') {
+                this.gridFields.iconName = 'arrow-up';
+                this.gridFields.order = 'asc';
                 this.topics = __WEBPACK_IMPORTED_MODULE_4_ramda___default.a.reverse(this.topics);
-            } else if (this.iconName == 'arrow-up') {
-                this.iconName = 'arrow-down';
+            } else if (this.gridFields.iconName == 'arrow-up') {
+                this.gridFields.iconName = 'arrow-down';
             }
         },
         Paginate: function Paginate(type, currentPage) {
@@ -57092,15 +57069,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.urlType == 'search' ? this.Search(currentPage.toString(), 'paginate') : this.getAllTopics(currentPage.toString());
         },
         setPaginatedData: function setPaginatedData(paginationObj) {
-            this.currentPage = paginationObj.currentPage, this.from = paginationObj.from, this.lastPage = paginationObj.lastPage, this.nextPageUrl = paginationObj.nextPageUrl, this.perPage = paginationObj.perPage, this.pervPageUrl = paginationObj.prevPageUrl, this.to = paginationObj.to, this.total = paginationObj.total;
+            this.gridFields.currentPage = paginationObj.currentPage, this.gridFields.from = paginationObj.from, this.gridFields.lastPage = paginationObj.lastPage, this.gridFields.nextPageUrl = paginationObj.nextPageUrl, this.gridFields.perPage = paginationObj.perPage, this.gridFields.pervPageUrl = paginationObj.prevPageUrl, this.gridFields.to = paginationObj.to, this.gridFields.total = paginationObj.total;
         },
         getAllTopics: function getAllTopics(currentPage) {
             var _this2 = this;
 
             __WEBPACK_IMPORTED_MODULE_0__common_http_common__["a" /* HTTP */].get('topics/all?page=' + currentPage).then(function (response) {
-                //Grid data    
+                //Grid data
                 _this2.topics = response.data.topics.data
-                //Grid Title    
+                //Grid Title
                 , _this2.title = response.data.title.toUpperCase();
                 //Pagination Values
                 _this2.setPaginatedData({
@@ -57118,18 +57095,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         showModalData: function showModalData(topic) {
-            this.showDeleteModal = true;
-            this.modalData = topic;
+            this.modalFields.showDeleteModal = true;
+            this.modalFields.modalData = topic;
         },
         deleteData: function deleteData(id) {
             var _this3 = this;
 
             __WEBPACK_IMPORTED_MODULE_0__common_http_common__["a" /* HTTP */].delete('topics/delete/' + id).then(function (response) {
-                _this3.showDeleteModal = false;
-                _this3.deletedValue = true;
-                _this3.alertMessage = "Delete Success";
+                _this3.modalFields.showDeleteModal = false;
+                _this3.alertFields.showAlert = true;
+                _this3.alertFields.alertMessage = "Delete Success";
                 _this3.$router.push({ name: 'TopicIndex' });
-                _this3.getAllTopics(_this3.currentPage.toString());
+                _this3.getAllTopics(_this3.gridFields.currentPage.toString());
             }).catch(function (error) {
                 _this3.errors = error.response.data.error;
             });
@@ -57137,7 +57114,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     },
     created: function created() {
-        this.getAllTopics(this.currentPage.toString());
+        var _this4 = this;
+
+        this.getAllTopics(this.gridFields.currentPage.toString());
+        if (this.$route.params.action) {
+            this.alertFields.showAlert = true;
+            setTimeout(function () {
+                _this4.alertFields.showAlert = false;
+            }, this.alertFields.alertDuration);
+        }
     }
 });
 
@@ -74797,7 +74782,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "submit": function($event) {
         $event.preventDefault();
-        _vm.Search(_vm.currentPage, 'searchForm')
+        _vm.Search(_vm.gridFields.currentPage, 'searchForm')
       }
     }
   }, [_c('div', {
@@ -74810,8 +74795,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: (_vm.name),
-      expression: "name"
+      value: (_vm.searchFields.name),
+      expression: "searchFields.name"
     }],
     staticClass: "form-control search-control",
     attrs: {
@@ -74819,12 +74804,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "type": "text"
     },
     domProps: {
-      "value": (_vm.name)
+      "value": (_vm.searchFields.name)
     },
     on: {
       "input": function($event) {
         if ($event.target.composing) { return; }
-        _vm.name = $event.target.value
+        _vm.searchFields.name = $event.target.value
       }
     }
   })]), _vm._v(" "), _c('div', {
@@ -74837,8 +74822,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: (_vm.description),
-      expression: "description"
+      value: (_vm.searchFields.description),
+      expression: "searchFields.description"
     }],
     staticClass: "form-control search-control",
     attrs: {
@@ -74846,12 +74831,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "type": "text"
     },
     domProps: {
-      "value": (_vm.description)
+      "value": (_vm.searchFields.description)
     },
     on: {
       "input": function($event) {
         if ($event.target.composing) { return; }
-        _vm.description = $event.target.value
+        _vm.searchFields.description = $event.target.value
       }
     }
   })]), _vm._v(" "), _vm._m(0)])]), _vm._v(" "), _c('hr'), _vm._v(" "), _c('router-link', {
@@ -74867,41 +74852,23 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("New")]), _vm._v(" "), _c('br'), _c('br'), _vm._v(" "), _c('alert', {
     attrs: {
-      "duration": 3000,
+      "duration": _vm.alertFields.alertDuration,
       "type": "success",
       "width": "400px",
       "dismissable": ""
     },
     model: {
-      value: (_vm.showAlertMessage),
+      value: (_vm.alertFields.showAlert),
       callback: function($$v) {
-        _vm.showAlertMessage = $$v
+        _vm.alertFields.showAlert = $$v
       },
-      expression: "showAlertMessage"
+      expression: "alertFields.showAlert"
     }
   }, [_c('icon', {
     attrs: {
       "name": 'check-square'
     }
-  }), _vm._v(" "), _c('strong', [_vm._v(_vm._s(_vm.alertMessage))])], 1), _vm._v(" "), _c('alert', {
-    attrs: {
-      "duration": 5000,
-      "type": "success",
-      "width": "400px",
-      "dismissable": ""
-    },
-    model: {
-      value: (_vm.deletedValue),
-      callback: function($$v) {
-        _vm.deletedValue = $$v
-      },
-      expression: "deletedValue"
-    }
-  }, [_c('icon', {
-    attrs: {
-      "name": 'check-square'
-    }
-  }), _vm._v(" "), _c('strong', [_vm._v(_vm._s(_vm.alertMessage))])], 1), _vm._v(" "), _c('table', {
+  }), _vm._v(" "), _c('strong', [_vm._v(_vm._s(_vm.alertFields.alertMessage))])], 1), _vm._v(" "), _c('table', {
     staticClass: "table"
   }, [_c('thead', [_c('tr', _vm._l((_vm.columns), function(column) {
     return _c('th', [(column.name) ? _c('a', {
@@ -74910,49 +74877,49 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.Order(column.name)
         }
       }
-    }, [_vm._v(_vm._s(column.title) + "\n                    "), ((_vm.clickedColumn == column.name) && _vm.iconName && column.name) ? _c('icon', {
+    }, [_vm._v(_vm._s(column.title) + "\n                    "), ((_vm.gridFields.clickedColumn == column.name) && _vm.gridFields.iconName && column.name) ? _c('icon', {
       attrs: {
-        "name": _vm.iconName
+        "name": _vm.gridFields.iconName
       }
     }) : _vm._e()], 1) : _vm._e()])
   })), _vm._v(" "), _c('tr', [_c('td'), _vm._v(" "), _c('td', [_c('input', {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: (_vm.fname),
-      expression: "fname"
+      value: (_vm.gridFields.gridfilters.fname),
+      expression: "gridFields.gridfilters.fname"
     }],
     staticClass: "search-control",
     attrs: {
       "type": "text"
     },
     domProps: {
-      "value": (_vm.fname)
+      "value": (_vm.gridFields.gridfilters.fname)
     },
     on: {
       "input": function($event) {
         if ($event.target.composing) { return; }
-        _vm.fname = $event.target.value
+        _vm.gridFields.gridfilters.fname = $event.target.value
       }
     }
   })]), _vm._v(" "), _c('td', [_c('input', {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: (_vm.fdescription),
-      expression: "fdescription"
+      value: (_vm.gridFields.gridfilters.fdescription),
+      expression: "gridFields.gridfilters.fdescription"
     }],
     staticClass: "search-control",
     attrs: {
       "type": "text"
     },
     domProps: {
-      "value": (_vm.fdescription)
+      "value": (_vm.gridFields.gridfilters.fdescription)
     },
     on: {
       "input": function($event) {
         if ($event.target.composing) { return; }
-        _vm.fdescription = $event.target.value
+        _vm.gridFields.gridfilters.fdescription = $event.target.value
       }
     }
   })])])]), _vm._v(" "), _c('tbody', _vm._l((_vm.topicList), function(topic, index) {
@@ -74983,37 +74950,37 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         }
       }
     }, [_vm._v("Delete")])])])
-  }))])], 1), _vm._v(" "), _c('nav', [_c('div', [_vm._v("Showing " + _vm._s(_vm.from) + " to " + _vm._s(_vm.to) + " of " + _vm._s(_vm.total)), _c('p'), _vm._v(" "), _c('ul', {
+  }))])], 1), _vm._v(" "), _c('nav', [_c('div', [_vm._v("Showing " + _vm._s(_vm.gridFields.from) + " to " + _vm._s(_vm.gridFields.to) + " of " + _vm._s(_vm.gridFields.total)), _c('p'), _vm._v(" "), _c('ul', {
     staticClass: "pagination"
-  }, [_c('li', {
+  }, [(_vm.gridFields.currentPage > 1) ? _c('li', {
     staticClass: "page-item"
   }, [_c('a', {
     staticClass: "page-link",
     on: {
       "click": function($event) {
-        _vm.Paginate('prev', _vm.currentPage)
+        _vm.Paginate('prev', _vm.gridFields.currentPage)
       }
     }
-  }, [_vm._v("Previous")])]), _vm._v(" "), _c('li', [_c('span', [_vm._v("Page " + _vm._s(_vm.currentPage) + " of " + _vm._s(_vm.lastPage) + " ")])]), _vm._v(" "), _c('li', {
+  }, [_vm._v("Previous")])]) : _vm._e(), _vm._v(" "), _c('li', [_c('span', [_vm._v("Page " + _vm._s(_vm.gridFields.currentPage) + " of " + _vm._s(_vm.gridFields.lastPage) + " ")])]), _vm._v(" "), (_vm.gridFields.nextPageUrl) ? _c('li', {
     staticClass: "page-item"
   }, [_c('a', {
     staticClass: "page-link",
     on: {
       "click": function($event) {
-        _vm.Paginate('next', _vm.currentPage)
+        _vm.Paginate('next', _vm.gridFields.currentPage)
       }
     }
-  }, [_vm._v("Next")])])])])])])]), _vm._v(" "), _c('div', [_c('modal', {
+  }, [_vm._v("Next")])]) : _vm._e()])])])])]), _vm._v(" "), _c('div', [_c('modal', {
     attrs: {
       "effect": "fade",
       "width": "400"
     },
     model: {
-      value: (_vm.showDeleteModal),
+      value: (_vm.modalFields.showDeleteModal),
       callback: function($$v) {
-        _vm.showDeleteModal = $$v
+        _vm.modalFields.showDeleteModal = $$v
       },
-      expression: "showDeleteModal"
+      expression: "modalFields.showDeleteModal"
     }
   }, [_c('div', {
     staticClass: "modal-header",
@@ -75023,7 +74990,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v("\n     Are you sure you want to delete this topic?\n   ")])]), _vm._v(" "), _c('div', {
     staticClass: "modal-body",
     slot: "modal-body"
-  }, [_c('p', [_vm._v("Name: " + _vm._s(_vm.modalData.name))]), _vm._v(" "), _c('p', [_vm._v("Description: " + _vm._s(_vm.modalData.description))])]), _vm._v(" "), _c('div', {
+  }, [_c('p', [_vm._v("Name: " + _vm._s(_vm.modalFields.modalData.name))]), _vm._v(" "), _c('p', [_vm._v("Description: " + _vm._s(_vm.modalFields.modalData.description))])]), _vm._v(" "), _c('div', {
     staticClass: "modal-footer",
     slot: "modal-footer"
   }, [_c('button', {
@@ -75033,7 +75000,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     on: {
       "click": function($event) {
-        _vm.showDeleteModal = false
+        _vm.modalFields.showDeleteModal = false
       }
     }
   }, [_vm._v("Cancel")]), _vm._v(" "), _c('button', {
@@ -75043,7 +75010,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     on: {
       "click": function($event) {
-        _vm.deleteData(_vm.modalData.id)
+        _vm.deleteData(_vm.modalFields.modalData.id)
       }
     }
   }, [_vm._v("Delete")])])])], 1), _vm._v(" "), _c('div')])
