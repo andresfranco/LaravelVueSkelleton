@@ -28,6 +28,11 @@
             <icon v-bind:name="'check-square'"></icon>
             <strong>{{alertMessage}}</strong>
             </alert>
+            <alert  v-model="deletedValue" :duration="5000" type="success" width="400px" dismissable>
+                <icon v-bind:name="'check-square'"></icon>
+                <strong>{{alertMessage}}</strong>
+            </alert>
+
             <table class="table">
                 <thead>
                     <tr>
@@ -98,7 +103,7 @@
  </div>  
 </template>
 
-<script>
+<script type="text/ecmascript-6">
 import {HTTP} from '../common/http-common';
 import  'vue-awesome/icons/arrow-down';
 import 'vue-awesome/icons/arrow-up';
@@ -137,7 +142,8 @@ import { modal,alert} from 'vue-strap';
         urlType:'list',
         showDeleteModal:false,
         alertMessage:this.$route.params.message,
-        modalData:{}
+        modalData:{},
+        deletedValue:false
 
         }
     },
@@ -163,10 +169,11 @@ import { modal,alert} from 'vue-strap';
         
         },
           showAlertMessage:function(){
-            if(this.$route.params.action){
-               return this.$route.params.action; 
+            if(this.$route.params.action ) {
+                return true;
             }
-            return false;      
+              return false;
+
            
         }
         
@@ -262,21 +269,25 @@ import { modal,alert} from 'vue-strap';
 
           HTTP.delete('topics/delete/'+id)
                     .then(response =>{
-                        this.showDeleteModal=false; 
+                        this.showDeleteModal=false;
+                        this.deletedValue =true;
+                        this.alertMessage = "Delete Success";
                         this.$router.push({name:'TopicIndex'});
-                        location.reload();
-                         
+                        this.getAllTopics(this.currentPage.toString());
                         
                     })
                     .catch(error=>{
                          this.errors = error.response.data.error;
                     });
+
         }
        
     },
     created() 
     {
         this.getAllTopics(this.currentPage.toString());
+
+
     },
     
     } 

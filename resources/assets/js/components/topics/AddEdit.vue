@@ -23,7 +23,7 @@
 </div>  
 </template>
 
-<script>
+<script type="text/ecmascript-6">
 import {HTTP} from '../common/http-common';
 export default {
      data: function () {
