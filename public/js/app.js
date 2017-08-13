@@ -56963,20 +56963,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -56994,9 +56980,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return {
             title: '',
             topics: [],
-            columns: [{ code: "", name: "id", title: "Id" }, { code: "", name: "name", title: "Name" }, { code: "", name: "description", title: "Description" }, { code: "edit", name: "" }, { code: "delete", name: "" }],
+            columns: [{ code: "", name: "id", title: "Id", enabledFilter: false, filterData: { class: 'search-control', modelname: 'id' } }, { code: "", name: "name", title: "Name", enabledFilter: true, filterData: { class: 'search-control', modelname: 'fname' } }, { code: "", name: "description", title: "Description", enabledFilter: true, filterData: { class: 'search-control', modelname: 'fdescription' } }, { code: "edit", name: "" }, { code: "delete", name: "" }],
             searchFields: { name: '', description: '' },
-            gridFields: (_gridFields = { iconName: '', clickedColumn: '', order: '' }, _defineProperty(_gridFields, 'iconName', ''), _defineProperty(_gridFields, 'currentPage', 1), _defineProperty(_gridFields, 'from', ''), _defineProperty(_gridFields, 'lastPage', ''), _defineProperty(_gridFields, 'nextPageUrl', ''), _defineProperty(_gridFields, 'perPage', ''), _defineProperty(_gridFields, 'pervPageUrl', ''), _defineProperty(_gridFields, 'to', ''), _defineProperty(_gridFields, 'total', ''), _defineProperty(_gridFields, 'urlType', 'list'), _defineProperty(_gridFields, 'gridfilters', { fname: '', fdescription: '' }), _gridFields),
+            searchForm: { searchButtonTitle: "Search", formFields: [{ name: 'Name', modelname: 'name', class: 'form-control search-control' }, { name: 'Description', modelname: 'description', class: 'form-control search-control' }] },
+            gridFields: (_gridFields = {
+                gridTitle: '', iconName: '', clickedColumn: '', order: '' }, _defineProperty(_gridFields, 'iconName', ''), _defineProperty(_gridFields, 'currentPage', 1), _defineProperty(_gridFields, 'from', ''), _defineProperty(_gridFields, 'lastPage', ''), _defineProperty(_gridFields, 'nextPageUrl', ''), _defineProperty(_gridFields, 'perPage', ''), _defineProperty(_gridFields, 'pervPageUrl', ''), _defineProperty(_gridFields, 'to', ''), _defineProperty(_gridFields, 'total', ''), _defineProperty(_gridFields, 'urlType', 'list'), _defineProperty(_gridFields, 'gridfilters', { fname: '', fdescription: '' }), _gridFields),
             modalFields: { showDeleteModal: false, modalData: {} },
             alertFields: { alertMessage: this.$route.params.message, showAlert: false, alertDuration: 5000 },
             paginate: ['topicsList'],
@@ -57078,7 +57066,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 //Grid data
                 _this2.topics = response.data.topics.data
                 //Grid Title
-                , _this2.title = response.data.title.toUpperCase();
+                , _this2.gridFields.gridTitle = response.data.title.toUpperCase();
                 //Pagination Values
                 _this2.setPaginatedData({
                     currentPage: response.data.topics.current_page,
@@ -74778,68 +74766,50 @@ return /******/ (function(modules) { // webpackBootstrap
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', [_c('div', {
     staticClass: "grid-container"
-  }, [_c('div', [_c('div', [_c('h3', [_vm._v(_vm._s(_vm.title))])]), _vm._v(" "), _c('div', [_c('div', [_c('form', {
+  }, [_c('div', [_c('div', [_c('h3', [_vm._v(_vm._s(_vm.gridFields.gridTitle))])]), _vm._v(" "), _c('div', [_c('div', [_c('form', {
     on: {
       "submit": function($event) {
         $event.preventDefault();
         _vm.Search(_vm.gridFields.currentPage, 'searchForm')
       }
     }
-  }, [_c('div', {
-    staticClass: "form-group"
-  }, [_c('label', {
-    attrs: {
-      "for": "name"
-    }
-  }, [_vm._v("Name")]), _vm._v(" "), _c('input', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.searchFields.name),
-      expression: "searchFields.name"
-    }],
-    staticClass: "form-control search-control",
-    attrs: {
-      "name": "name",
-      "type": "text"
-    },
-    domProps: {
-      "value": (_vm.searchFields.name)
-    },
-    on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.searchFields.name = $event.target.value
+  }, [_vm._l((_vm.searchForm.formFields), function(searchitem) {
+    return _c('div', {
+      staticClass: "form-group"
+    }, [_c('label', {
+      attrs: {
+        "for": "name"
       }
-    }
-  })]), _vm._v(" "), _c('div', {
-    staticClass: "form-group"
-  }, [_c('label', {
-    attrs: {
-      "for": "name"
-    }
-  }, [_vm._v("Description")]), _vm._v(" "), _c('input', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.searchFields.description),
-      expression: "searchFields.description"
-    }],
-    staticClass: "form-control search-control",
-    attrs: {
-      "name": "description",
-      "type": "text"
-    },
-    domProps: {
-      "value": (_vm.searchFields.description)
-    },
-    on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.searchFields.description = $event.target.value
+    }, [_vm._v(_vm._s(searchitem.name))]), _vm._v(" "), _c('input', {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: (_vm.searchFields[searchitem.modelname]),
+        expression: "searchFields[searchitem.modelname]"
+      }],
+      class: searchitem.class,
+      attrs: {
+        "name": searchitem.name,
+        "type": "text"
+      },
+      domProps: {
+        "value": (_vm.searchFields[searchitem.modelname])
+      },
+      on: {
+        "input": function($event) {
+          if ($event.target.composing) { return; }
+          _vm.$set(_vm.searchFields, searchitem.modelname, $event.target.value)
+        }
       }
+    })])
+  }), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('button', {
+    staticClass: "btn btn-primary",
+    attrs: {
+      "type": "submit"
     }
-  })]), _vm._v(" "), _vm._m(0)])]), _vm._v(" "), _c('hr'), _vm._v(" "), _c('router-link', {
+  }, [_vm._v(_vm._s(_vm.searchForm.searchButtonTitle))])])], 2)]), _vm._v(" "), _c('hr'), _vm._v(" "), _c('router-link', {
     staticClass: "btn btn-primary",
     attrs: {
       "to": {
@@ -74877,57 +74847,41 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.Order(column.name)
         }
       }
-    }, [_vm._v(_vm._s(column.title) + "\n                    "), ((_vm.gridFields.clickedColumn == column.name) && _vm.gridFields.iconName && column.name) ? _c('icon', {
+    }, [_vm._v(_vm._s(column.title) + "\n                       "), ((_vm.gridFields.clickedColumn == column.name) && _vm.gridFields.iconName && column.name) ? _c('icon', {
       attrs: {
         "name": _vm.gridFields.iconName
       }
     }) : _vm._e()], 1) : _vm._e()])
-  })), _vm._v(" "), _c('tr', [_c('td'), _vm._v(" "), _c('td', [_c('input', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.gridFields.gridfilters.fname),
-      expression: "gridFields.gridfilters.fname"
-    }],
-    staticClass: "search-control",
-    attrs: {
-      "type": "text"
-    },
-    domProps: {
-      "value": (_vm.gridFields.gridfilters.fname)
-    },
-    on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.gridFields.gridfilters.fname = $event.target.value
+  })), _vm._v(" "), _c('tr', _vm._l((_vm.columns), function(column) {
+    return _c('td', [(column.enabledFilter) ? _c('input', {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: (_vm.gridFields.gridfilters[column.filterData.modelname]),
+        expression: "gridFields.gridfilters[column.filterData.modelname]"
+      }],
+      class: column.filterData.class,
+      attrs: {
+        "type": "text"
+      },
+      domProps: {
+        "value": (_vm.gridFields.gridfilters[column.filterData.modelname])
+      },
+      on: {
+        "input": function($event) {
+          if ($event.target.composing) { return; }
+          _vm.$set(_vm.gridFields.gridfilters, column.filterData.modelname, $event.target.value)
+        }
       }
-    }
-  })]), _vm._v(" "), _c('td', [_c('input', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.gridFields.gridfilters.fdescription),
-      expression: "gridFields.gridfilters.fdescription"
-    }],
-    staticClass: "search-control",
-    attrs: {
-      "type": "text"
-    },
-    domProps: {
-      "value": (_vm.gridFields.gridfilters.fdescription)
-    },
-    on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.gridFields.gridfilters.fdescription = $event.target.value
-      }
-    }
-  })])])]), _vm._v(" "), _c('tbody', _vm._l((_vm.topicList), function(topic, index) {
+    }) : _vm._e()])
+  }))]), _vm._v(" "), _c('tbody', _vm._l((_vm.topicList), function(griditem, index) {
     return _c('tr', {
       attrs: {
         "data-index": index
       }
-    }, [_c('td', [_vm._v(_vm._s(topic.id))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(topic.name))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(topic.description))]), _vm._v(" "), _c('td', [_c('router-link', {
+    }, [_vm._l((griditem), function(item) {
+      return _c('td', [_vm._v(_vm._s(item))])
+    }), _vm._v(" "), _c('td', [_c('router-link', {
       staticClass: "btn btn-primary",
       attrs: {
         "to": {
@@ -74935,7 +74889,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           params: {
             title: 'Edit Topic',
             mode: 'upd',
-            id: topic.id
+            id: griditem.id
           }
         }
       }
@@ -74946,10 +74900,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       },
       on: {
         "click": function($event) {
-          _vm.showModalData(topic)
+          _vm.showModalData(griditem)
         }
       }
-    }, [_vm._v("Delete")])])])
+    }, [_vm._v("Delete")])])], 2)
   }))])], 1), _vm._v(" "), _c('nav', [_c('div', [_vm._v("Showing " + _vm._s(_vm.gridFields.from) + " to " + _vm._s(_vm.gridFields.to) + " of " + _vm._s(_vm.gridFields.total)), _c('p'), _vm._v(" "), _c('ul', {
     staticClass: "pagination"
   }, [(_vm.gridFields.currentPage > 1) ? _c('li', {
@@ -74987,7 +74941,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     slot: "modal-header"
   }, [_c('h4', {
     staticClass: "modal-title"
-  }, [_vm._v("\n     Are you sure you want to delete this topic?\n   ")])]), _vm._v(" "), _c('div', {
+  }, [_vm._v("\n           Are you sure you want to delete this topic?\n           ")])]), _vm._v(" "), _c('div', {
     staticClass: "modal-body",
     slot: "modal-body"
   }, [_c('p', [_vm._v("Name: " + _vm._s(_vm.modalFields.modalData.name))]), _vm._v(" "), _c('p', [_vm._v("Description: " + _vm._s(_vm.modalFields.modalData.description))])]), _vm._v(" "), _c('div', {
@@ -75014,16 +74968,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   }, [_vm._v("Delete")])])])], 1), _vm._v(" "), _c('div')])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "form-group"
-  }, [_c('button', {
-    staticClass: "btn btn-primary",
-    attrs: {
-      "type": "submit"
-    }
-  }, [_vm._v("Buscar")])])
-}]}
+},staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()

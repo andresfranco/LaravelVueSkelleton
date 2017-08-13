@@ -8,6 +8,12 @@ use Validator;
  
 class TopicController extends Controller
 {
+
+    public function __construct()
+    {
+       $this->gridColumns =['id','name','description'];
+       $this->gridNumberOfPages =20;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -25,7 +31,8 @@ class TopicController extends Controller
      */
     public function all()
     {
-        $topics =Topic::orderBy('name')->paginate(2);
+
+        $topics =Topic::select($this->gridColumns)->orderBy('name')->paginate($this->gridNumberOfPages);
         $title = 'Topics';
         $topics_data =["title"=>$title,"topics"=>$topics];
         return response()->json(
@@ -55,13 +62,13 @@ class TopicController extends Controller
     public function search(Request $request)
     {
         
-        $topics = Topic::where('name','LIKE', (is_null($request->name)?' ':'%'.$request->name.'%'))
+        $topics = Topic::select($this->gridColumns)->where('name','LIKE', (is_null($request->name)?' ':'%'.$request->name.'%'))
         ->orWhere('description','LIKE',(is_null($request->description)?' ':'%'.$request->description.'%'))
         ->orderBy('name')
-        ->paginate(20);
+        ->paginate($this->gridNumberOfPages);
 
         if(!$request->name && !$request->description){
-           $topics = Topic::orderBy('name')->paginate(20);
+           $topics = Topic::select($this->gridColumns)->orderBy('name')->paginate($this->gridNumberOfPages);
         }    
         return response()->json($topics,201);
     }
