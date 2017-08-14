@@ -2,9 +2,11 @@
      <div>
     <div class ="grid-container">
         <div>
-            <div><h3>{{gridFields.gridTitle}}</h3></div>
+           <div><h3>{{gridFields.gridTitle}}</h3></div>
          <div>
-         <div>
+         <a @click="showSearchForm(searchForm.searchShow,searchForm.showIcon)" style="float:right;">
+         <icon v-bind:name="searchForm.showIcon"></icon> {{searchForm.searchIconLabel}}</a>            
+         <div id="search-form" v-show ="searchForm.searchShow">
             <form v-on:submit.prevent="Search(gridFields.currentPage,'searchForm')">
                 <div class="form-group" v-for ="searchitem in searchForm.formFields">
                 <label for="name">{{searchitem.name}}</label>
@@ -14,26 +16,28 @@
                 <button type="submit" class="btn btn-primary">{{searchForm.searchButtonTitle}}</button>
                 </div>
             </form>
+            <hr>
          </div>
-         <hr>
-            <router-link :to="{name:'AddEditTopic', params:{title:'New Topic',mode:'ins'}}" class="btn btn-primary">New</router-link>
+         
+            <router-link :to="getComponentLink(null,gridFields.newComponentData)" class="btn btn-primary">{{gridFields.newButtonLabel}}</router-link>
             <br><br>
             <alert  v-model="alertFields.showAlert" :duration="alertFields.alertDuration" type="success" width="400px" dismissable>
                 <icon v-bind:name="'check-square'"></icon>
                 <strong>{{alertFields.alertMessage}}</strong>
             </alert>
-
+            <a @click="showFilters(searchForm.filtersShow,searchForm.showFilterIcon)" style="float:right;">
+            <icon v-bind:name="searchForm.showFilterIcon"></icon> {{searchForm.searchIconFiltersLabel}}</a>
             <table class="table">
                 <thead>
                     <tr>
-                        <th v-for="column in columns" >
+                        <th v-for="column in gridColumns" >
                         <a v-if="column.name" @click ="Order(column.name)">{{column.title}}
                         <icon v-bind:name="gridFields.iconName" v-if="(gridFields.clickedColumn==column.name) && gridFields.iconName && column.name "></icon>
                         </a>
                         </th>
                     </tr>
-                    <tr>
-                        <td v-for="column in columns">
+                    <tr v-show="searchForm.filtersShow">   
+                        <td v-for="column in gridColumns">
                         <input v-if="column.enabledFilter"  type ="text" :class ="column.filterData.class" v-model ="gridFields.gridfilters[column.filterData.modelname]">
                         </td>
                     </tr>
@@ -41,8 +45,8 @@
                 <tbody>
                     <tr v-for="(griditem,index) in  topicList" v-bind:data-index="index">
                         <td v-for="item in griditem">{{item}}</td>
-                        <td><router-link :to="{name:'AddEditTopic', params:{title:'Edit Topic',mode:'upd',id: griditem.id }}"  class="btn btn-primary">Edit</router-link></td>
-                        <td><button type="button" class="btn btn-danger" @click ="showModalData(griditem)">Delete</button></td>
+                        <td><router-link :to="getComponentLink(griditem.id,gridFields.editComponentData)" class="btn btn-primary">{{gridFields.editButtonLabel}}</router-link></td>
+                        <td><button type="button" class="btn btn-danger" @click ="showModalData(griditem)">{{gridFields.deleteButtonLabel}}</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -64,16 +68,17 @@
     <modal v-model="modalFields.showDeleteModal" effect="fade" width="400">
         <div slot="modal-header" class="modal-header">
             <h4 class="modal-title">
-            Are you sure you want to delete this topic?
+            {{modalFields.modalTitle}}
             </h4>
         </div>
         <div slot="modal-body" class="modal-body">
-            <p>Name: {{modalFields.modalData.name}}</p>
-            <p>Description: {{modalFields.modalData.description}}</p>
+            <div v-for="modalitem in  modalFields.availableFields">
+             {{modalitem.title}} : {{modalFields.modalData[modalitem.name]}}
+            </div>
         </div>
         <div slot="modal-footer" class="modal-footer">
-            <button type="button" class="btn btn-default" @click="modalFields.showDeleteModal = false">Cancel</button>
-            <button type="button" class="btn btn-danger" @click="deleteData(modalFields.modalData.id)">Delete</button>
+            <button type="button" class="btn btn-default" @click="modalFields.showDeleteModal = false">{{gridFields.cancelButtonLabel}}</button>
+            <button type="button" class="btn btn-danger" @click="deleteData(modalFields.modalData.id)">{{gridFields.deleteButtonLabel}}</button>
         </div>
     </modal>
    </div>
@@ -84,7 +89,7 @@
  </div>
 </template>
 
-<script type="text/ecmascript-6">
+<script>
 import {HTTP} from '../common/http-common';
 import  'vue-awesome/icons/arrow-down';
 import 'vue-awesome/icons/arrow-up';
@@ -99,7 +104,7 @@ import { modal,alert} from 'vue-strap';
         return {
         title: '',
         topics:[],
-        columns:[
+        gridColumns:[
         {code:"",name:"id",title:"Id",enabledFilter:false,filterData:{class:'search-control',modelname:'id'}},
         {code:"",name:"name",title:"Name",enabledFilter:true,filterData:{class:'search-control',modelname:'fname'}}
         ,{code:"",name:"description",title:"Description",enabledFilter:true,filterData:{class:'search-control',modelname:'fdescription'}}
@@ -107,9 +112,8 @@ import { modal,alert} from 'vue-strap';
         ,{code:"delete",name:""}
         ],
         searchFields:{name:'',description:''},
-        searchForm:{searchButtonTitle:"Search",formFields:[
+        searchForm:{searchButtonTitle:'Search',searchIconLabel:'Search Fields',searchIconFiltersLabel:'Show Filters',searchShow:true,showIcon:'search-plus',filtersShow:true,showFilterIcon:'search-plus',formFields:[
         {name:'Name',modelname:'name',class:'form-control search-control'},
-
         {name:'Description',modelname:'description',class:'form-control search-control'}
         ]},
         gridFields:
@@ -117,13 +121,16 @@ import { modal,alert} from 'vue-strap';
         gridTitle:'',iconName:'',clickedColumn:'',order:'',iconName:'',currentPage:1,
         from:'',lastPage:'',nextPageUrl:'', perPage:'', pervPageUrl:'', to:'',
         total:'', urlType:'list',
-        gridfilters:{fname:'',fdescription:''}
+        gridfilters:{fname:'',fdescription:''},
+        editComponentData:{name:'AddEditTopic',title:'Edit Topic',mode:'upd'},
+        newComponentData:{name:'AddEditTopic', title:'New Topic',mode:'ins'},
+        editButtonLabel:'Edit',newButtonLabel:'New',deleteButtonLabel:'Delete',cancelButtonLabel:'Cancel'
         },
-        modalFields:{showDeleteModal:false,modalData:{}},
+        modalFields:{showDeleteModal:false,modalData:{},modalTitle:'Are you sure you want to delete this topic?',availableFields:[{name:'name',title:'Name'},{name:'description',title:'Description'}]},
         alertFields:{alertMessage:this.$route.params.message,showAlert:false,alertDuration:5000},
-        paginate: ['topicsList'],
-        urlType:'list'
-
+        paginateFields:{labels:{showing:'Showing',to:'to',of:'of',page:'Page',next:'Next',previous:'Prevous'},paginateListName:'topicsList'},
+        paginate:['topicList']
+       
         }
     },
     computed:{
@@ -144,16 +151,16 @@ import { modal,alert} from 'vue-strap';
              return item;
 
       });
-
+          
 
         }
-
+        
 
     },
     methods: {
 
         Search:function(currentPage,callType){
-           this.urlType ='search';
+           this.gridFields.urlType ='search';
            callType=='searchForm'?currentPage=1:currentPage;
            HTTP.post('topics/search?page='+currentPage.toString(),this.searchFields)
             .then(response => {
@@ -194,7 +201,7 @@ import { modal,alert} from 'vue-strap';
         Paginate:function(type,currentPage){
 
           currentPage = (type =='prev' ? currentPage -1 : currentPage =currentPage +1);
-          this.urlType =='search'?this.Search(currentPage.toString(),'paginate'):this.getAllTopics(currentPage.toString());
+          this.gridFields.urlType =='search'?this.Search(currentPage.toString(),'paginate'):this.getAllTopics(currentPage.toString());
 
         },
         setPaginatedData:function(paginationObj){
@@ -232,9 +239,9 @@ import { modal,alert} from 'vue-strap';
                 });
 
         },
-        showModalData:function(topic){
+        showModalData:function(modaldata){
            this.modalFields.showDeleteModal=true;
-           this.modalFields.modalData =topic;
+           this.modalFields.modalData =modaldata;
 
         },
         deleteData:function(id){
@@ -252,6 +259,24 @@ import { modal,alert} from 'vue-strap';
                          this.errors = error.response.data.error;
                     });
 
+        },
+        showSearchForm:function(searchShow,showIcon){
+
+        showIcon =='search-plus'?this.searchForm.showIcon ='search-minus':this.searchForm.showIcon ='search-plus';  
+        this.searchForm.searchShow =!searchShow;
+            
+        },
+        showFilters:function(filtersShow,showFilterIcon){
+
+        showFilterIcon =='search-plus'?this.searchForm.showFilterIcon ='search-minus':this.searchForm.showFilterIcon ='search-plus';  
+        this.searchForm.filtersShow =!filtersShow;
+            
+        },
+        getComponentLink:function(id,addEditParams){
+           let returnObject ={name:'',params:{}};
+           id==null? returnObject= {name:addEditParams.name, params:{title:addEditParams.title,mode:addEditParams.mode}}:
+           returnObject={name:addEditParams.name, params:{title:addEditParams.title,mode:addEditParams.mode,id:id}};
+           return returnObject;
         }
 
     },

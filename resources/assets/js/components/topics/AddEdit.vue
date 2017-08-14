@@ -23,7 +23,7 @@
 </div>  
 </template>
 
-<script type="text/ecmascript-6">
+<script>
 import {HTTP} from '../common/http-common';
 export default {
      data: function () {
@@ -35,7 +35,7 @@ export default {
             mode:this.$route.params.mode,
             id:this.$route.params.id,
             topicData:this.getTopics(this.$route.params.mode,this.$route.params.id),
-             errors:{name:[],description:[]}    
+             errors:{name:[],description:[]}
            
         }
     },

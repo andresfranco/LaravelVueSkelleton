@@ -12,7 +12,7 @@ class TopicController extends Controller
     public function __construct()
     {
        $this->gridColumns =['id','name','description'];
-       $this->gridNumberOfPages =20;
+       $this->gridNumberOfPages =5;
     }
     /**
      * Display a listing of the resource.
