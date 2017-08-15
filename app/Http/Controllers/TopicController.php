@@ -34,7 +34,7 @@ class TopicController extends Controller
 
         $topics =Topic::select($this->gridColumns)->orderBy('name')->paginate($this->gridNumberOfPages);
         $title = 'Topics';
-        $topics_data =["title"=>$title,"topics"=>$topics];
+        $topics_data =["title"=>$title,"gridData"=>$topics];
         return response()->json(
             $topics_data,
             200
