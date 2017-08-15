@@ -102,31 +102,41 @@ import { modal,alert} from 'vue-strap';
     data:function() {
         return {
         gridApiData:[],
+        //Columns shown in the grid and columns with filter, Filterdata has the information of the v-model name and class for the grid filters.
         gridColumns:[
         {name:'id',title:'Id',enabledFilter:false,filterData:{class:'search-control',modelname:'id'}},
         {name:'name',title:'Name',enabledFilter:true,filterData:{class:'search-control',modelname:'fname'}}
         ,{name:'description',title:'Description',enabledFilter:true, filterData:{class:'search-control',modelname:'fdescription'}},
+        //Buttons for actions , do not have names.
         {code:'edit',name:''},
         {code:"delete",name:''}
         ],
+        //Object send to the api, it fill with the values of inputs in search form.
         searchFields:{name:'',description:''},
+        //Search form parameters
         searchForm:{
         searchButtonTitle:'Search',searchIconLabel:'Search Fields',searchIconFiltersLabel:'Show Filters',searchShow:true,showIcon:'search-plus',filtersShow:true,showFilterIcon:'search-plus',formFields:[
         {name:'Name',modelname:'name',class:'form-control search-control'},
         {name:'Description',modelname:'description',class:'form-control search-control'}
         ]},
+        //Grid parameters
         gridFields:
         {
         gridTitle:'',iconName:'',clickedColumn:'',order:'',iconName:'',currentPage:1,
         from:'',lastPage:'',nextPageUrl:'', perPage:'', pervPageUrl:'', to:'',
         total:'', urlType:'list',
         gridfilters:{fname:'',fdescription:''},
+        //Edit component parameters in the edit button
         editComponentData:{name:'AddEditTopic',title:'Edit Topic',mode:'upd'},
+        //New component parameters in the new button
         newComponentData:{name:'AddEditTopic', title:'New Topic',mode:'ins'},
         editButtonLabel:'Edit',newButtonLabel:'New',deleteButtonLabel:'Delete',cancelButtonLabel:'Cancel',
+        //Routes for all actions search form , delete, new and edit button
         routeData:{moduleName:'topics',searchRoute:'/search',allRoute:'/all',deleteRoute:'/delete',indexRoute:'TopicIndex'},
+        //Icons for order and show and hide search form and filters.
         iconNames:{orderUp:'arrow-up',orderDown:'arrow-down',showPlus:'search-plus',showMinus:'search-minus'}
         },
+        //Delete modal.
         modalFields:{
             effect:'fade',width:'400px',showDeleteModal:false,modalData:{},
             modalTitle:'Are you sure you want to delete this topic?',deleteMessage:'Delete Success'
@@ -135,13 +145,16 @@ import { modal,alert} from 'vue-strap';
             modalTitle:'modal-title',modalHeader:'modal-header',modalBody:'modal-body',modalFooter:'modal-footer',
             cancelButton:'btn btn-default',deleteButton:'btn btn-danger'}
         },
+        //Alerts that show the success actions: new ,update and delete
         alertFields:{alertMessage:this.$route.params.message,showAlert:false,alertDuration:5000,
             type:'success',width:'400px',iconName:'check-square'
         },
+        //Grid paginator
         paginateFields:{
             labels:{showing:'Showing',to:'to',of:'of',page:'Page',next:'Next',previous:'Prevous'},
             paginateListName:'gridApiDataList',cssClasses:{paginateList:'pagination',pageItem:'page-item',pageLink:'page-link'}
         },
+        //Grid css classes 
         cssClasses:{
             gridContainer:'grid-container',showIcon:'show-icon',formGroup:'form-group',searchButton:'btn btn-primary',
             newButton:'btn btn-primary',gridTable:'table',editButton:'btn btn-primary',deleteButton:'btn btn-danger',
@@ -149,12 +162,14 @@ import { modal,alert} from 'vue-strap';
         }
     },
     computed:{
-        // It needs to improve dynamic to filter the data array with the filters array.
+        //Filter data with the grid filter inputs.
+        // Try to improve dynamic to filter the data array with the filters array.
+        //For add the filters is required to manual add the conditions.
         dataList:function(){
-           var vm = this;
+         var vm = this;
          return this.gridApiData.filter(function (item) {
 
-             if(vm.gridFields.gridfilters.fname && !vm.gridFields.gridfilters.fdescription){
+            if(vm.gridFields.gridfilters.fname && !vm.gridFields.gridfilters.fdescription){
                  return (item.name.toLowerCase().indexOf(vm.gridFields.gridfilters.fname.toLowerCase()) !== -1);
              }
              if(!vm.gridFields.gridfilters.fname && vm.gridFields.gridfilters.fdescription){
@@ -162,13 +177,13 @@ import { modal,alert} from 'vue-strap';
              }
              if(vm.gridFields.gridfilters.fname && vm.gridFields.gridfilters.fdescription){
             return ((item.name.toLowerCase().indexOf(vm.gridFields.gridfilters.fname.toLowerCase()) !== -1)
-             || (item.description.toLowerCase().indexOf(vm.gridFields.gridfilters.fdescription.toLowerCase()) !== -1));
+             && (item.description.toLowerCase().indexOf(vm.gridFields.gridfilters.fdescription.toLowerCase()) !== -1));
              }
              return item;});
         }
     },
     methods:{
-
+        //Search data , filter with the search form inputs
         Search:function(currentPage,callType){
            this.gridFields.urlType ='search';
            callType=='searchForm'?currentPage=1:currentPage;
@@ -193,6 +208,7 @@ import { modal,alert} from 'vue-strap';
                 });
                 this.gridFields.iconName = '';
         },
+        //Order data if click column
         Order:function(column_name){
            this.gridFields.clickedColumn =column_name;
            this.gridFields.order ='desc';
@@ -208,6 +224,7 @@ import { modal,alert} from 'vue-strap';
                 this.gridFields.iconName =  this.gridFields.iconNames.orderDown;
             }
         },
+        //Set Paginate values from api , all the paginate data is comming from the api rest.
         Paginate:function(type,currentPage){
 
           currentPage = (type =='prev' ? currentPage -1 : currentPage =currentPage +1);
@@ -224,6 +241,7 @@ import { modal,alert} from 'vue-strap';
             this.gridFields.to=paginationObj.to,
             this.gridFields.total=paginationObj.total
         } ,
+        //Get all the data ,paginated
         getAll:function(currentPage){
           HTTP.get(this.gridFields.routeData.moduleName+this.gridFields.routeData.allRoute+'?page='+currentPage)
                 .then(response => {
@@ -249,11 +267,13 @@ import { modal,alert} from 'vue-strap';
                 });
 
         },
+        //Show modal if click delete button
         showModalData:function(modaldata){
            this.modalFields.showDeleteModal=true;
            this.modalFields.modalData =modaldata;
 
         },
+        //Call the api rest and delete the row in the database.
         deleteData:function(id){
 
           HTTP.delete(this.gridFields.routeData.moduleName+this.gridFields.routeData.deleteRoute+'/'+id)
@@ -270,18 +290,21 @@ import { modal,alert} from 'vue-strap';
                     });
 
         },
+        //Hide or show search form
         showSearchForm:function(searchShow,showIcon){
 
         showIcon ==this.gridFields.iconNames.showPlus?this.searchForm.showIcon =this.gridFields.iconNames.showMinus:this.searchForm.showIcon =this.gridFields.iconNames.showPlus;
         this.searchForm.searchShow =!searchShow;
             
         },
+        //Hide or show grid filters
         showFilters:function(filtersShow,showFilterIcon){
 
         showFilterIcon ==this.gridFields.iconNames.showPlus?this.searchForm.showFilterIcon =this.gridFields.iconNames.showMinus:this.searchForm.showFilterIcon =this.gridFields.iconNames.showPlus;
         this.searchForm.filtersShow =!filtersShow;
             
         },
+        //Get the component link if id is null get the component for new if not get the component for Edit.
         getComponentLink:function(id,addEditParams){
            let returnObject ={name:'',params:{}};
            id==null? returnObject= {name:addEditParams.name, params:{title:addEditParams.title,mode:addEditParams.mode}}:
@@ -292,8 +315,11 @@ import { modal,alert} from 'vue-strap';
     },
         created()
         {
+            //Populate the grid with all the data paginated.
             this.getAll(this.gridFields.currentPage.toString());
+            //Check if the component was called from an edit or new action.
             if ( this.$route.params.action) {
+                //Set the timeout for the alert that shows action success
                 this.alertFields.showAlert = true;
                 setTimeout(()=>{
                     this.alertFields.showAlert = false;
