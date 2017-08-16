@@ -102,9 +102,28 @@ import { modal,alert} from 'vue-strap';
     components:{Icon,modal,alert},
     props:['gridColumns', 'searchFields','searchForm','gridFields','modalFields'
     ,'alertFields','paginateFields','cssClasses','filterConditions'],
-   
+    computed:{
+        dataList:function(){
+         var vm = this;
+         return this.gridApiData.filter(function (item) {
+
+            if(vm.gridFields.gridfilters.fname && !vm.gridFields.gridfilters.fdescription){
+                 return (item.name.toLowerCase().indexOf(vm.gridFields.gridfilters.fname.toLowerCase()) !== -1);
+             }
+             if(!vm.gridFields.gridfilters.fname && vm.gridFields.gridfilters.fdescription){
+               return (item.description.toLowerCase().indexOf(vm.gridFields.gridfilters.fdescription.toLowerCase()) !== -1);
+             }
+             if(vm.gridFields.gridfilters.fname && vm.gridFields.gridfilters.fdescription){
+            return ((item.name.toLowerCase().indexOf(vm.gridFields.gridfilters.fname.toLowerCase()) !== -1)
+             && (item.description.toLowerCase().indexOf(vm.gridFields.gridfilters.fdescription.toLowerCase()) !== -1));
+             }
+             return item;});
+    }
+
+    },
     data:function() {
         return {
+        gridApiData:[]
     }
     },
     methods:{
@@ -250,7 +269,6 @@ import { modal,alert} from 'vue-strap';
                     this.alertFields.showAlert = false;
                 },this.alertFields.alertDuration);
             }
-
         }
     }
 </script>
