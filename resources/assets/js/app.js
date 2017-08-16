@@ -29,8 +29,9 @@ Vue.component('grid', require('./components/Grid.vue'));
 Vue.component('layoutbackend', require('./components/admin/LayoutBackend.vue'));
 Vue.component('landinglayout', require('./components/landing/LandingLayout.vue'));
 Vue.component('index', require('./components/landing/Index.vue'));
-Vue.component('topics-grid', require('./components/topics/Index.vue'));
+Vue.component('topics-index', require('./components/topics/Index.vue'));
 Vue.component('topics-add-edit', require('./components/topics/AddEdit.vue'));
+Vue.component('test', require('./components/Test.vue'));
 
 const app = new Vue({
   router
