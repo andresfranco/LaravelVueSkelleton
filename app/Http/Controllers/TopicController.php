@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Topic as Topic;
+use App\Models\Topic as Topic;
 use Validator;
  
 class TopicController extends Controller

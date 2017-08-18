@@ -24,9 +24,11 @@ const router = new VueRouter({routes, mode: 'history'});
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+Vue.component('login', require('./components/admin/Login.vue'));
 Vue.component('grid-table', require('./components/GridTable.vue'));
 Vue.component('grid', require('./components/Grid.vue'));
 Vue.component('layoutbackend', require('./components/admin/LayoutBackend.vue'));
+Vue.component('backend-index', require('./components/admin/Index.vue'));
 Vue.component('landinglayout', require('./components/landing/LandingLayout.vue'));
 Vue.component('index', require('./components/landing/Index.vue'));
 Vue.component('topics-index', require('./components/topics/Index.vue'));

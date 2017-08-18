@@ -70,8 +70,8 @@
             </div>
         </div>
         <div slot="modal-footer" :class="modalFields.cssClasses.modalFooter">
-            <button type="button" :class="modalFields.cssClasses.cancelButton" @click="modalFields.showDeleteModal = false">{{gridFields.cancelButtonLabel}}</button>
             <button type="button" :class="modalFields.cssClasses.deleteButton" @click="deleteData(modalFields.modalData.id)">{{gridFields.deleteButtonLabel}}</button>
+            <button type="button" :class="modalFields.cssClasses.cancelButton" @click="modalFields.showDeleteModal = false">{{gridFields.cancelButtonLabel}}</button>       
         </div>
     </modal>
    </div>

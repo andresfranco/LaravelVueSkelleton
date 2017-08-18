@@ -1,97 +1,50 @@
 <template>
 <html>
 <body>
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand"  id="menu-toggle" @click ="OpenMenu(menuclicked)"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a></li>
-                <li><a href="#"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help</a></li>
-                <li><a href="#"><span class="glyphicon glyphicon-off" aria-hidden="true"></span> Log Out</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
+<top-navbar @openmenu="onClickTopNavbar" :topNavbarOptions="topNavbarOptions"></top-navbar>
 <div id="wrapper" v-bind:class="{ toggled: menuclicked }">
     <div class="container-fluid">
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper">
-            <ul class="sidebar-nav">
-                <li class="sidebar-brand">
-                    <br>
-                </li>
-
-                <li>
-                    <router-link to="/admin/topics"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Topics</router-link>
-                </li>
-                <li>
-                    <a href="#"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search</a>
-                </li>
-                <li>
-                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span><font color="#337AB7"> STATISTICS</font>
-                </li>
-                <li>
-                    <a href="#"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> Reports</a>
-                </li>
-                <li>
-                    <a href="#"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Statistic</a>
-                </li>
-                <li>
-                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span><font color="#337AB7"> ADMINISTRATION</font>
-                </li>
-                <li>
-                    <a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Users</a>
-                </li>
-                <li>
-                    <a href="#"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Messages</a>
-                </li>
-            </ul>
-        </div>
-        <!-- /#sidebar-wrapper -->
-
-        <!-- Page Content -->
-        <div id="page-content-wrapper">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <router-view></router-view>
-                    </div>
-                </div>
+    <sidebar-menu :menuOptions="menuOptions"></sidebar-menu>
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+            <div class="col-lg-12">
+                <router-view></router-view>
+            </div>
             </div>
         </div>
-        <!-- /#page-content-wrapper -->
+    </div>
     </div>
 </div>
-<!-- /#wrapper -->
-
-
-
 </body>
 </html>
 </template>
 
 <script>
 import  'vue-awesome/icons';
+import Topnavbar from './Topnavbar.vue';
+import Sidebarmenu from './Sidebarmenu.vue';
 export default {
     data: function () {
         return {
-            menuclicked: false
+            menuclicked: false,
+            menuOptions:[{route:'BackendIndex',icon:'glyphicon glyphicon-home',name:'Home'},
+                {route:'TopicIndex',icon:'glyphicon glyphicon-align-justify',name:'Topics'}],
+            topNavbarOptions:[{route:'',icon:'glyphicon glyphicon-user',name:'User'},
+            {route:'',icon:'glyphicon glyphicon-off',name:'Logout'}
+            ]
         }
     },
-    methods: {
-        OpenMenu: function (menuclicked) {
-            this.menuclicked = !menuclicked;
+    components:{
+        'top-navbar':Topnavbar,
+        'sidebar-menu':Sidebarmenu
+    },
+    methods:{
+        onClickTopNavbar:function(value){
+           this.menuclicked =value;
         }
+        
     }
 }
 </script>
