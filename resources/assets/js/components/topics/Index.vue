@@ -13,9 +13,9 @@
         return {
         //Columns shown in the grid and columns with filter, Filterdata has the information of the v-model name and class for the grid filters.
         gridColumns:[
-        {name:'id',title:'Id',enabledFilter:false,filterData:{class:'search-control',modelname:'id'}},
-        {name:'name',title:'Name',enabledFilter:true,filterData:{class:'search-control',modelname:'fname'}}
-        ,{name:'description',title:'Description',enabledFilter:true, filterData:{class:'search-control',modelname:'fdescription'}},
+        {name:'id',title:'Id'},
+        {name:'name',title:'Name'}
+        ,{name:'description',title:'Description'},
         //Buttons for actions , do not have names.
         {code:'edit',name:''},
         {code:"delete",name:''}
@@ -24,7 +24,7 @@
         searchFields:{name:'',description:''},
         //Search form parameters
         searchForm:{
-        searchButtonTitle:'Search',searchIconLabel:'Search Fields',searchIconFiltersLabel:'Show Filters',searchShow:true,showIcon:'search-plus',filtersShow:true,showFilterIcon:'search-plus',formFields:[
+        searchButtonTitle:'Search',searchIconLabel:'Search Fields',searchShow:true,showIcon:'search-plus',formFields:[
         {name:'Name',modelname:'name',class:'form-control search-control'},
         {name:'Description',modelname:'description',class:'form-control search-control'}
         ]},

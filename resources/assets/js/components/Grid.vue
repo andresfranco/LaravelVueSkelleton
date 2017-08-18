@@ -25,9 +25,7 @@
                 <icon :name="alertFields.iconName"></icon>
                 <strong>{{alertFields.alertMessage}}</strong>
             </alert>
-            <a @click="showFilters(searchForm.filtersShow,searchForm.showFilterIcon)" :class="cssClasses.showIcon">
-            <icon v-bind:name="searchForm.showFilterIcon"></icon> {{searchForm.searchIconFiltersLabel}}</a>
-            <table :class="cssClasses.gridTable">
+                <table :class="cssClasses.gridTable">
                 <thead>
                     <tr>
                         <th v-for="column in gridColumns" >
@@ -36,20 +34,15 @@
                         </a>
                         </th>
                     </tr>
-                    <tr v-show="searchForm.filtersShow">   
-                        <td v-for="column in gridColumns">
-                        <input v-if="column.enabledFilter"  type ="text" :class ="column.filterData.class" v-model ="gridFields.gridfilters[column.filterData.modelname]">
-                        </td>
-                    </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(griditem,index) in dataList" v-bind:data-index="index">
+                    <tr v-for="(griditem,index) in  gridApiData" v-bind:data-index="index">
                         <td v-for="item in griditem">{{item}}</td>
                         <td><router-link :to="getComponentLink(griditem.id,gridFields.editComponentData)" :class="cssClasses.editButton">{{gridFields.editButtonLabel}}</router-link></td>
                         <td><button type="button" :class="cssClasses.deleteButton" @click ="showModalData(griditem)">{{gridFields.deleteButtonLabel}}</button></td>
                     </tr>
                 </tbody>
-            </table>
+            </table>   
         </div>
 
         <nav >
@@ -102,25 +95,7 @@ import { modal,alert} from 'vue-strap';
     components:{Icon,modal,alert},
     props:['gridColumns', 'searchFields','searchForm','gridFields','modalFields'
     ,'alertFields','paginateFields','cssClasses','filterConditions'],
-    computed:{
-        dataList:function(){
-         var vm = this;
-         return this.gridApiData.filter(function (item) {
-
-            if(vm.gridFields.gridfilters.fname && !vm.gridFields.gridfilters.fdescription){
-                 return (item.name.toLowerCase().indexOf(vm.gridFields.gridfilters.fname.toLowerCase()) !== -1);
-             }
-             if(!vm.gridFields.gridfilters.fname && vm.gridFields.gridfilters.fdescription){
-               return (item.description.toLowerCase().indexOf(vm.gridFields.gridfilters.fdescription.toLowerCase()) !== -1);
-             }
-             if(vm.gridFields.gridfilters.fname && vm.gridFields.gridfilters.fdescription){
-            return ((item.name.toLowerCase().indexOf(vm.gridFields.gridfilters.fname.toLowerCase()) !== -1)
-             && (item.description.toLowerCase().indexOf(vm.gridFields.gridfilters.fdescription.toLowerCase()) !== -1));
-             }
-             return item;});
-    }
-
-    },
+    
     data:function() {
         return {
         gridApiData:[]
