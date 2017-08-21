@@ -1,28 +1,44 @@
 <template>
-    <div>
-        <div class="alert alert-danger" v-if="error && !success">
-            <p>There was an error, unable to complete registration.</p>
+    <div class="login">
+     <div class="login-triangle"></div>
+      <h2 class="login-header">Register</h2>
+       <form class="login-container" autocomplete="off" @submit.prevent="validateForm()" >
+        <div><p v-for="error in errors">{{error}}</p></div>  
+        <p><input type="text" placeholder="Name" v-model="registerForm.name"></p>
+        <p><input type="email" placeholder="Email" v-model="registerForm.email" ></p>
+        <p><input type="password" placeholder="Password" v-model="registerForm.password"></p>
+        <p><input type="password" placeholder="Password Confirmation" v-model="registerForm.vpassword"></p>
+        <p><input type="submit" value="Sign Up"></p>
+        <div>
+        <a href="" @click ="backtoLogin()" style="padding-left:20px"><span class="" aria-hidden="true"></span>Login</a>      
         </div>
-        <div class="alert alert-success" v-if="success">
-            <p>Registration completed. You can now sign in.</p>
-        </div>
-        <form autocomplete="off" v-on:submit="register" v-if="!success">
-            <div class="form-group" v-bind:class="{ 'has-error': error && response.username }">
-                <label for="name">Name</label>
-                <input type="text" id="name" class="form-control" v-model="name" required>
-                <span class="help-block" v-if="error && response.name">{{ response.name }}</span>
-            </div>
-            <div class="form-group" v-bind:class="{ 'has-error': error && response.email }">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" class="form-control" placeholder="gavin.belson@hooli.com" v-model="email" required>
-                <span class="help-block" v-if="error && response.email">{{ response.email }}</span>
-            </div>
-            <div class="form-group" v-bind:class="{ 'has-error': error && response.password }">
-                <label for="password">Password</label>
-                <input type="password" id="password" class="form-control" v-model="password" required>
-                <span class="help-block" v-if="error && response.password">{{ response.password }}</span>
-            </div>
-            <button type="submit" class="btn btn-default">Submit</button>
         </form>
     </div>
 </template>
+<script>
+export default {     
+     data:function() {
+        return {
+         registerForm:{name:'',email:'',password:'',vpassword:''},
+         errors:[],
+         success:false
+      
+        }
+    },
+    methods:{
+        backtoLogin:function(){
+          this.$router.push({name:'Login'});
+        },
+        validateForm:function(){
+          this.errors=[];   
+          let valid =true;  
+          if(this.registerForm.password !== this.registerForm.vpassword ){
+            valid = false;
+            this.errors.push('Password and password confirmation have to be equal');
+          }
+
+          return valid; 
+        }
+    }
+}
+</script>

@@ -1,5 +1,13 @@
 <template>
-     <router-view></router-view> 
+<html>
+<body>
+<div class="row">
+<div class="col-lg-12">
+    <router-view></router-view>
+</div>
+</div>   
+</body>
+</html>
 </template>
 <style>
 body {
@@ -65,7 +73,8 @@ body {
 }
 
 .login input[type="email"],
-.login input[type="password"] {
+.login input[type="password"],
+.login input[type="text"] {
   background: #fff;
   border-color: #bbb;
   color: #555;
@@ -74,6 +83,11 @@ body {
 /* Text fields' focus effect */
 .login input[type="email"]:focus,
 .login input[type="password"]:focus {
+  border-color: #888;
+}
+/* Text fields' focus effect */
+.login input[type="text"]:focus
+{
   border-color: #888;
 }
 
