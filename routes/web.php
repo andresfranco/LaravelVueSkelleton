@@ -38,6 +38,10 @@ Route::get('/{name}', function () {
     Route::prefix('tests')->group(function () {
         Route::get('/test', 'TestController@test');
     });
+    Route::post('/register', 'Auth\AuthController@register');   
+    Route::post('/signin', 'Auth\AuthController@signin');   
+    Route::get('/user','UserController@index');
+
     Route::prefix('topics')->group(function () {
         Route::get('/all', 'TopicController@all');
         Route::get('/edit/{id}', 'TopicController@edit');

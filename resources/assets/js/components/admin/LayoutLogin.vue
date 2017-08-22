@@ -106,4 +106,11 @@ body {
 .login input[type="submit"]:focus {
   border-color: #05a;
 }
+span.has-error {
+    color:red;
+    padding-left:15px;
+}
+input[type="text"].has-error,input[type="email"].has-error,input[type="password"].has-error{
+    border-color:red;
+}
 </style>

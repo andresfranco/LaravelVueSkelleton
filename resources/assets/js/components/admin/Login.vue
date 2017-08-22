@@ -2,7 +2,7 @@
 <div class="login" >
   <div class="login-triangle"></div>
   <h2 class="login-header">Log in</h2>
-  <form class="login-container">
+  <form class="login-container" v-on:submit="signin()">
     <div>Errors</div>
     
     <p><input type="email" placeholder="Email" v-model="loginForm.email"></p>
@@ -16,6 +16,7 @@
 
 </template>
 <script>
+import {auth} from '../../auth.js';
   export default {         
     data:function() {
         return {
@@ -27,8 +28,8 @@
          this.$router.push({name:'SignUp'});
        
       },
-      register:function(){
-
+      signin(event) {
+        auth.signin(loginForm);
       }
     }
   }
