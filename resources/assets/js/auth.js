@@ -1,14 +1,11 @@
-import Vue from './app.js';
-import {router} from './app.js';
 import {HTTP} from './components/common/http-common.js';
-
 export default {
     user: {
         authenticated: false,
         profile: null
     },
-   methods:{
-    check:function() {
+    errors:{},
+    check() {
         let token = localStorage.getItem('id_token')
         if (token !== null) {
             HTTP.get('user?token=' + token,
@@ -18,16 +15,16 @@ export default {
             })
         }
     },   
-    register:function(registerForm){
+    register(registerForm,router){
         HTTP.post('register',registerForm )
         .then(response =>{
-        this.$router.push({name:'Login',params:{ message:"Registration success"}});
+            router.push({name:'Login',params:{ message:"Registration success"}});
         })
         .catch(error=>{
-        this.errors = error.response.data.error;
+        this.errors = error.error;
         });
    },
-   signin:function(LoginForm) {
+   signin(LoginForm) {
     HTTP.post('signin',LoginForm)
     .then(response => {
         localStorage.setItem('id_token', response.data.meta.token);
@@ -47,9 +44,6 @@ export default {
         this.user.profile = null;
 
         router.push({name: 'Login'});
-    }
-   }
-   
-      
+    }     
   
 }

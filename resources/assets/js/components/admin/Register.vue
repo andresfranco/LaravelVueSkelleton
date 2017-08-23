@@ -20,7 +20,8 @@ import auth from '../../auth.js';
 export default {     
      data:function() {
         return {
-         registerForm:{name:'',email:'',password:'',vpassword:''}
+         registerForm:{name:'',email:'',password:'',vpassword:''},
+         errorData:{}
       
         }
     },
@@ -31,7 +32,8 @@ export default {
         validateBeforeSubmit() { 
              this.$validator.validateAll().then((result) => {
         if (result) {
-          auth.register(this.registerForm);
+          auth.register(this.registerForm,this.$router);
+          if(auth.errors){this.errorData =auth.errors}
         }
 
       });
