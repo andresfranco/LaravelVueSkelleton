@@ -10,8 +10,8 @@ export default {
         if (token !== null) {
             HTTP.get('user?token=' + token,
             ).then(response => {
-                this.user.authenticated = true
-                this.user.profile = response.data.data
+                this.user.authenticated = true;
+                this.user.profile = response;
             })
         }
     },   
@@ -24,18 +24,25 @@ export default {
         this.errors = error.error;
         });
    },
-   signin(LoginForm) {
-    HTTP.post('signin',LoginForm)
+   signin(LoginForm,router) {
+    HTTP.post('signin',this.loginForm)
     .then(response => {
-        localStorage.setItem('id_token', response.data.meta.token);
-        Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_token');
-
-        this.user.authenticated = true;
-        this.user.profile = response.data.data;
-
-        router.push({name: 'BackendIndex',params:{user:this.user}});
-    }).catch(error=>{
-        this.errors = error.response.data.error;
+         if(response.data.error){
+          // this.dataErrors = response.data.error;
+        }else{
+            if(response.data.data.name){
+            localStorage.setItem('id_token', response.data.meta.token);
+            //Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_token');
+            this.user.authenticated = true;
+            this.user.profile = response.data;
+            window.location.replace('/admin?id='+btoa(JSON.stringify(this.user)));
+            }
+        }
+       
+      
+        }).catch(error=>{
+          console.log(error);
+          //this.dataErrors = error.error;
         });
     },
     signout() {

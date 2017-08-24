@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import  'vue-awesome/icons';
 import Topnavbar from './Topnavbar.vue';
 import Sidebarmenu from './Sidebarmenu.vue';
 export default {
@@ -31,9 +30,11 @@ export default {
             menuclicked: false,
             menuOptions:[{route:'BackendIndex',icon:'glyphicon glyphicon-home',name:'Home'},
                 {route:'TopicIndex',icon:'glyphicon glyphicon-align-justify',name:'Topics'}],
-            topNavbarOptions:[{route:'',icon:'glyphicon glyphicon-user',name:'User'},
+            topNavbarOptions:[{code:'username',route:'',icon:'glyphicon glyphicon-user',name:JSON.parse(atob(this.$route.query.id)).profile.data.name},
             {route:'',icon:'glyphicon glyphicon-off',name:'Logout'}
-            ]
+            ],
+            LoggedUserData:JSON.parse(atob(this.$route.query.id))
+            
         }
     },
     components:{
@@ -46,6 +47,7 @@ export default {
         }
         
     }
+
 }
 </script>
 <style>

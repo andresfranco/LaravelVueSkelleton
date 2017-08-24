@@ -59,8 +59,8 @@ class AuthController extends Controller
 
         if (!$token) {
             return response()->json([
-                'error' => 'Could not authenticate',
-            ], 401);
+                'error' => 'User or password Incorrect',
+            ]);
         } else {
             $data = [];
             $meta = [];
