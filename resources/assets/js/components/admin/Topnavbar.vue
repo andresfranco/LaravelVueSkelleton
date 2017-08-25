@@ -12,7 +12,7 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li v-for ="item in topNavbarOptions"><router-link :to="{name:item.route}"><span :class="item.icon"></span> {{ item.name}}</router-link></li>
+                <li v-for ="item in topNavbarOptions"><router-link v-on:click.native="item.clickEvent" :to="{name:item.route}"><span :class="item.icon"></span> {{ item.name}}</router-link></li>
             </ul>
         </div>
     </div>

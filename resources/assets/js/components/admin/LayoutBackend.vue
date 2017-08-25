@@ -24,16 +24,17 @@
 <script>
 import Topnavbar from './Topnavbar.vue';
 import Sidebarmenu from './Sidebarmenu.vue';
+import auth from '../../auth.js';
 export default {
     data: function () {
         return {
             menuclicked: false,
             menuOptions:[{route:'BackendIndex',icon:'glyphicon glyphicon-home',name:'Home'},
                 {route:'TopicIndex',icon:'glyphicon glyphicon-align-justify',name:'Topics'}],
-            topNavbarOptions:[{code:'username',route:'',icon:'glyphicon glyphicon-user',name:JSON.parse(atob(this.$route.query.id)).profile.data.name},
-            {route:'',icon:'glyphicon glyphicon-off',name:'Logout'}
-            ],
-            LoggedUserData:JSON.parse(atob(this.$route.query.id))
+            topNavbarOptions:[{code:'username',route:'',icon:'glyphicon glyphicon-user'
+            ,name:localStorage.getItem('userName'),clickEvent:''},
+            {route:'',icon:'glyphicon glyphicon-off',name:'Logout',clickEvent:this.signOut}
+            ]
             
         }
     },
@@ -44,6 +45,9 @@ export default {
     methods:{
         onClickTopNavbar:function(value){
            this.menuclicked =value;
+        },
+        signOut:function(){
+         auth.signOut(this.$router);
         }
         
     }

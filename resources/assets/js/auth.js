@@ -8,7 +8,7 @@ export default {
     check() {
         let token = localStorage.getItem('id_token')
         if (token !== null) {
-            HTTP.get('user?token=' + token,
+            HTTP.get('user?token='+token,
             ).then(response => {
                 this.user.authenticated = true;
                 this.user.profile = response;
@@ -24,33 +24,34 @@ export default {
         this.errors = error.error;
         });
    },
-   signin(LoginForm,router) {
-    HTTP.post('signin',this.loginForm)
+   signin(vm,loginForm,router) {
+    HTTP.post('signin',loginForm)
     .then(response => {
-         if(response.data.error){
-          // this.dataErrors = response.data.error;
-        }else{
-            if(response.data.data.name){
-            localStorage.setItem('id_token', response.data.meta.token);
-            //Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_token');
-            this.user.authenticated = true;
-            this.user.profile = response.data;
-            window.location.replace('/admin?id='+btoa(JSON.stringify(this.user)));
-            }
+      if(response.data.error){
+        vm.alertFields.type='danger';
+        vm.alertFields.alertMessage=response.data.error;
+        vm.alertFields.showAlert=true;
+        vm.alertFields.iconName='exclamation-circle';
+        vm.alertFields.alertDuration=9000;
         }
-       
+        else if(response.data.data.name){
+            localStorage.setItem('id_token', response.data.meta.token);
+            vm.user.authenticated = true;
+            vm.user.profile = response.data;
+            localStorage.setItem('userName', response.data.data.name);
+            window.location.replace('/admin');
+        }
       
-        }).catch(error=>{
-          console.log(error);
-          //this.dataErrors = error.error;
-        });
+    }).catch(error=>{
+    console.log(error);
+    });
     },
-    signout() {
+    signOut(router) {
         localStorage.removeItem('id_token');
+        localStorage.removeItem('userName');
         this.user.authenticated = false;
         this.user.profile = null;
-
-        router.push({name: 'Login'});
+        window.location.replace('/login');
     }     
   
 }

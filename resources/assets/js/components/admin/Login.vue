@@ -25,7 +25,7 @@ import {alert} from 'vue-strap';
 import Icon from 'vue-awesome/components/Icon';
 import {HTTP} from '../common/http-common.js';
   export default {         
-    data:function() {
+    data:function(){
         return {
          loginForm:{email:'',password:''},
          alertFields:{alertMessage:'',showAlert:false,alertDuration:5000,
@@ -41,54 +41,24 @@ import {HTTP} from '../common/http-common.js';
     components:{alert,Icon},
     methods:{
       signUp:function(){
-         this.$router.push({name:'SignUp'});
-       
+         this.$router.push({name:'SignUp'});     
       },
       signin:function() {
           this.$validator.validateAll().then((result) => {
-        if (result) {
-              HTTP.post('signin',this.loginForm)
-              .then(response => {
-                if(response.data.error){
-                //this.dataErrors = 
-                this.alertFields.type='danger';
-                this.alertFields.alertMessage=response.data.error;
-                this.alertFields.showAlert=true;
-                this.alertFields.iconName='exclamation-circle';
-                this.alertFields.alertDuration=9999999
-                  }else{
-                  if(response.data.data.name){
-                  localStorage.setItem('id_token', response.data.meta.token);
-                  //Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_token');
-                  this.user.authenticated = true;
-                  this.user.profile = response.data;
-                  window.location.replace('/admin?id='+btoa(JSON.stringify(this.user)));
-                  }
-                }
-
-
-              }).catch(error=>{
-              console.log(error);
-              });
-        }
+          if (result){ auth.signin(this,this.loginForm,this.$router);} 
       }); 
       }
     },
-    created()
-        {
-           
-            //Check if the component was called from an edit or new action.
-            if ( this.$route.params.message) {
-                //Set the timeout for the alert that shows action success
-                this.alertFields.alertMessage =this.$route.params.message;
-                this.alertFields.showAlert = true;
-                setTimeout(()=>{
-                    this.alertFields.showAlert = false;
-                },this.alertFields.alertDuration);
-            }
-           
-          
-            
-        }
+    created(){
+      //Check if the component was called from an edit or new action.
+      if ( this.$route.params.message) {
+          //Set the timeout for the alert that shows action success
+          this.alertFields.alertMessage =this.$route.params.message;
+          this.alertFields.showAlert = true;
+          setTimeout(()=>{
+              this.alertFields.showAlert = false;
+          },this.alertFields.alertDuration);
+      }    
+    }
   }
 </script>
