@@ -1,19 +1,21 @@
 import {HTTP} from './components/common/http-common.js';
 export default {
-    user: {
-        authenticated: false,
-        profile: null
-    },
+    user: {authenticated: false,profile: null},
     errors:{},
-    check() {
+    check(vm,router) {
+        
         let token = localStorage.getItem('id_token')
         if (token !== null) {
             HTTP.get('user?token='+token,
             ).then(response => {
-                this.user.authenticated = true;
-                this.user.profile = response;
+                vm.user.authenticated = true;
+                vm.user.profile = response.data;
             })
+        }else{
+            window.location.replace('/login');
         }
+         
+
     },   
     register(registerForm,router){
         HTTP.post('register',registerForm )
@@ -46,11 +48,11 @@ export default {
     console.log(error);
     });
     },
-    signOut(router) {
+    signOut(vm,router) {
         localStorage.removeItem('id_token');
         localStorage.removeItem('userName');
-        this.user.authenticated = false;
-        this.user.profile = null;
+        vm.user.authenticated = false;
+        vm.user.profile = null;
         window.location.replace('/login');
     }     
   

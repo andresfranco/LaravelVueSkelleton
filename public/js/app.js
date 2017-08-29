@@ -2560,29 +2560,27 @@ module.exports = defaults;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_common_http_common_js__ = __webpack_require__(23);
 
 /* harmony default export */ __webpack_exports__["a"] = ({
-    user: {
-        authenticated: false,
-        profile: null
-    },
+    user: { authenticated: false, profile: null },
     errors: {},
-    check: function check() {
-        var _this = this;
+    check: function check(vm, router) {
 
         var token = localStorage.getItem('id_token');
         if (token !== null) {
             __WEBPACK_IMPORTED_MODULE_0__components_common_http_common_js__["a" /* HTTP */].get('user?token=' + token).then(function (response) {
-                _this.user.authenticated = true;
-                _this.user.profile = response;
+                vm.user.authenticated = true;
+                vm.user.profile = response.data;
             });
+        } else {
+            window.location.replace('/login');
         }
     },
     register: function register(registerForm, router) {
-        var _this2 = this;
+        var _this = this;
 
         __WEBPACK_IMPORTED_MODULE_0__components_common_http_common_js__["a" /* HTTP */].post('register', registerForm).then(function (response) {
             router.push({ name: 'Login', params: { message: "Registration success" } });
         }).catch(function (error) {
-            _this2.errors = error.error;
+            _this.errors = error.error;
         });
     },
     signin: function signin(vm, loginForm, router) {
@@ -2604,11 +2602,11 @@ module.exports = defaults;
             console.log(error);
         });
     },
-    signOut: function signOut(router) {
+    signOut: function signOut(vm, router) {
         localStorage.removeItem('id_token');
         localStorage.removeItem('userName');
-        this.user.authenticated = false;
-        this.user.profile = null;
+        vm.user.authenticated = false;
+        vm.user.profile = null;
         window.location.replace('/login');
     }
 });
@@ -72695,7 +72693,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             menuclicked: false,
             menuOptions: [{ route: 'BackendIndex', icon: 'glyphicon glyphicon-home', name: 'Home' }, { route: 'TopicIndex', icon: 'glyphicon glyphicon-align-justify', name: 'Topics' }],
             topNavbarOptions: [{ code: 'username', route: '', icon: 'glyphicon glyphicon-user',
-                name: localStorage.getItem('userName'), clickEvent: '' }, { route: '', icon: 'glyphicon glyphicon-off', name: 'Logout', clickEvent: this.signOut }]
+                name: localStorage.getItem('userName'), clickEvent: '' }, { route: '', icon: 'glyphicon glyphicon-off', name: 'Logout', clickEvent: this.signOut }],
+            user: { authenticated: false, profile: null }
 
         };
     },
@@ -72708,11 +72707,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.menuclicked = value;
         },
         signOut: function signOut() {
-            __WEBPACK_IMPORTED_MODULE_2__auth_js__["a" /* default */].signOut(this.$router);
+            __WEBPACK_IMPORTED_MODULE_2__auth_js__["a" /* default */].signOut(this, this.$router);
         }
 
+    },
+    mounted: function mounted() {
+        this.$nextTick(function () {
+            __WEBPACK_IMPORTED_MODULE_2__auth_js__["a" /* default */].check(this, this.$router);
+        });
     }
-
 });
 
 /***/ }),
@@ -83978,7 +83981,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('html', [_c('body', [_c('top-navbar', {
+  return _c('html', [(_vm.user.authenticated) ? _c('body', [_c('top-navbar', {
     attrs: {
       "topNavbarOptions": _vm.topNavbarOptions
     },
@@ -84008,7 +84011,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "row"
   }, [_c('div', {
     staticClass: "col-lg-12"
-  }, [_c('router-view')], 1)])])])], 1)])], 1)])
+  }, [_c('router-view')], 1)])])])], 1)])], 1) : _vm._e()])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {

@@ -1,8 +1,8 @@
 <template>
 <html>
-<body>
+<body v-if="user.authenticated">
 <top-navbar @openmenu="onClickTopNavbar" :topNavbarOptions="topNavbarOptions"></top-navbar>
-<div id="wrapper" v-bind:class="{ toggled: menuclicked }">
+<div id="wrapper" v-bind:class="{ toggled: menuclicked }" >
     <div class="container-fluid">
     <sidebar-menu :menuOptions="menuOptions"></sidebar-menu>
     <!-- Page Content -->
@@ -34,7 +34,8 @@ export default {
             topNavbarOptions:[{code:'username',route:'',icon:'glyphicon glyphicon-user'
             ,name:localStorage.getItem('userName'),clickEvent:''},
             {route:'',icon:'glyphicon glyphicon-off',name:'Logout',clickEvent:this.signOut}
-            ]
+            ],
+            user:{authenticated:false,profile: null }
             
         }
     },
@@ -47,9 +48,14 @@ export default {
            this.menuclicked =value;
         },
         signOut:function(){
-         auth.signOut(this.$router);
+         auth.signOut(this,this.$router);
         }
         
+    },
+    mounted(){
+          this.$nextTick(function () {
+                auth.check(this,this.$router);
+           });
     }
 
 }

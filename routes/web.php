@@ -40,7 +40,6 @@ Route::get('/{name}', function () {
     });
     Route::post('/register', 'Auth\AuthController@register');   
     Route::post('/signin', 'Auth\AuthController@signin');   
-    Route::get('/user','UserController@index');
 
     Route::prefix('topics')->group(function () {
         Route::get('/all', 'TopicController@all');
@@ -51,6 +50,12 @@ Route::get('/{name}', function () {
         Route::delete('/delete/{id}', 'TopicController@destroy');
     });
 
+    Route::group(['middleware' => 'jwt.auth'], function () {
+        Route::get('/user', [
+            'uses' => 'UserController@index',
+        ]);
+    });
+ 
 
 
 });
